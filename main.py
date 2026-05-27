@@ -1,4 +1,14 @@
+import os
+import sys
+
+# Ensure we run using the local virtual environment Python if available
+script_dir = os.path.dirname(os.path.abspath(__file__))
+venv_python = os.path.join(script_dir, 'venv', 'bin', 'python')
+if os.path.exists(venv_python) and os.path.abspath(sys.executable) != os.path.abspath(venv_python):
+    os.execv(venv_python, [venv_python] + sys.argv)
+
 import cv2
+from typing import Tuple, List, Dict, Any
 import mediapipe as mp
 import numpy as np
 import time
@@ -7,6 +17,7 @@ import time
 mp_pose = mp.solutions.pose
 mp_face_mesh = mp.solutions.face_mesh
 mp_hands = mp.solutions.hands
+
 
 # --- Reference pose definition (normalized 0-1) ---
 # T-pose: arms out, legs apart, open hands
@@ -70,12 +81,9 @@ MOUTH_OUTER = [
 BTN_QUIT = (500, 420, 120, 45)
 
 
-def point_in_rect(x, y, rect):
-    rx, ry, rw, rh = rect
-    return rx <= x <= rx + rw and ry <= y <= ry + rh
 
 
-def draw_button(img, rect, text, color, text_color=(255,255,255)):
+def draw_button(img: Any, rect: Tuple[int, int, int, int], text: str, color: Tuple[int, int, int], text_color: Tuple[int, int, int] = (255, 255, 255)) -> None:
     x, y, w, h = rect
     overlay = img.copy()
     cv2.rectangle(overlay, (x, y), (x+w, y+h), color, -1)
@@ -86,7 +94,7 @@ def draw_button(img, rect, text, color, text_color=(255,255,255)):
                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, text_color, 2, cv2.LINE_AA)
 
 
-def draw_face(canvas, face_lm, w, h, color=(0,0,255), thickness=1):
+def draw_face(canvas: Any, face_lm: Any, w: int, h: int, color: Tuple[int, int, int] = (0, 0, 255), thickness: int = 1) -> None:
     pts = {}
     for lm in face_lm.landmark:
         pts[len(pts)] = (int(lm.x * w), int(lm.y * h))
@@ -104,7 +112,7 @@ def draw_face(canvas, face_lm, w, h, color=(0,0,255), thickness=1):
             cv2.circle(canvas, pts[i], 2, color, -1, cv2.LINE_AA)
 
 
-def draw_arms(canvas, landmarks, w, h, color=(0,0,255), thickness=1):
+def draw_arms(canvas: Any, landmarks: Any, w: int, h: int, color: Tuple[int, int, int] = (0, 0, 255), thickness: int = 1) -> None:
     pts = {}
     for idx in ARM_LANDMARKS:
         lm = landmarks[idx]
@@ -117,7 +125,7 @@ def draw_arms(canvas, landmarks, w, h, color=(0,0,255), thickness=1):
         cv2.circle(canvas, pt, 2, color, -1, cv2.LINE_AA)
 
 
-def draw_hand(canvas, hand_lm, w, h, color=(0,0,255), thickness=1):
+def draw_hand(canvas: Any, hand_lm: Any, w: int, h: int, color: Tuple[int, int, int] = (0, 0, 255), thickness: int = 1) -> None:
     pts = {}
     for lm in hand_lm.landmark:
         pts[len(pts)] = (int(lm.x * w), int(lm.y * h))
@@ -128,7 +136,7 @@ def draw_hand(canvas, hand_lm, w, h, color=(0,0,255), thickness=1):
         cv2.circle(canvas, pt, 2, color, -1, cv2.LINE_AA)
 
 
-def normalize_landmarks(landmarks):
+def normalize_landmarks(landmarks: Any) -> Dict[str, Tuple[float, float]]:
     """Normalize pose landmarks relative to torso center and size."""
     # Use shoulder midpoint and torso length as reference
     l_sh = landmarks[11]
@@ -151,7 +159,7 @@ def normalize_landmarks(landmarks):
     return result
 
 
-def compute_match_score(norm_live):
+def compute_match_score(norm_live: Dict[str, Tuple[float, float]]) -> int:
     """Compare normalized live pose to reference body. Returns 0-100."""
     if not norm_live:
         return 0
@@ -174,7 +182,7 @@ def compute_match_score(norm_live):
     return int(score)
 
 
-def check_index_finger_up(hand_landmarks):
+def check_index_finger_up(hand_landmarks: Any) -> bool:
     """
     Check if the index finger is pointed up, and other fingers (middle, ring, pinky) are folded.
     """
@@ -192,7 +200,7 @@ def check_index_finger_up(hand_landmarks):
     return index_up and middle_folded and ring_folded and pinky_folded
 
 
-def check_smile(face_landmarks):
+def check_smile(face_landmarks: Any) -> int:
     """
     Check if the face is smiling. Returns a score from 0 to 100.
     """
@@ -214,7 +222,7 @@ def check_smile(face_landmarks):
     return score
 
 
-def check_finger_near_mouth(hand_landmarks, face_landmarks):
+def check_finger_near_mouth(hand_landmarks: Any, face_landmarks: Any) -> bool:
     """
     Check if the index finger tip is near the mouth.
     """
@@ -237,7 +245,7 @@ def check_finger_near_mouth(hand_landmarks, face_landmarks):
     return dist < 0.12
 
 
-def make_reference_image():
+def make_reference_image() -> Any:
     """Draw the reference T-pose as a stick figure image."""
     W, H = 640, 480
     canvas = np.full((H, W, 3), (30, 30, 30), dtype=np.uint8)
@@ -318,8 +326,8 @@ class PoseMatcher:
         time.sleep(1)
 
         if not self.cap.isOpened():
-            print("Error: Cannot open camera.")
-            return
+            sys.stderr.write("Error: Cannot open camera.\n")
+            sys.exit(1)
 
         # MediaPipe
         self.pose = mp_pose.Pose(
@@ -347,131 +355,128 @@ class PoseMatcher:
 
         self.run()
 
-    def run(self):
-        while self.running:
-            ret, frame = self.cap.read()
-            if not ret:
-                time.sleep(0.1)
-                continue
+    def run(self) -> None:
+        """Main loop with resource cleanup and a small sleep to limit CPU usage."""
+        try:
+            while self.running:
+                ret, frame = self.cap.read()
+                if not ret:
+                    time.sleep(0.1)
+                    continue
 
-            frame = cv2.flip(frame, 1)
-            h, w, _ = frame.shape
-            rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                frame = cv2.flip(frame, 1)
+                h, w, _ = frame.shape
+                rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-            pose_res = self.pose.process(rgb)
-            face_res = self.face_mesh.process(rgb)
-            hands_res = self.hands.process(rgb)
+                pose_res = self.pose.process(rgb)
+                face_res = self.face_mesh.process(rgb)
+                hands_res = self.hands.process(rgb)
 
-            has_arms = False
-            has_face = False
-            hand_count = 0
-            has_index_up = False
-            smile_score = 0
+                has_arms = False
+                has_face = False
+                hand_count = 0
+                has_index_up = False
+                smile_score = 0
 
-            if pose_res.pose_landmarks:
-                lm = pose_res.pose_landmarks.landmark
-                has_arms = True
-                draw_arms(frame, lm, w, h)
+                if pose_res.pose_landmarks:
+                    lm = pose_res.pose_landmarks.landmark
+                    has_arms = True
+                    draw_arms(frame, lm, w, h)
 
-            if face_res.multi_face_landmarks:
-                self.last_face = face_res.multi_face_landmarks[0]
-                has_face = True
-                draw_face(frame, self.last_face, w, h)
-                smile_score = check_smile(self.last_face)
+                if face_res.multi_face_landmarks:
+                    self.last_face = face_res.multi_face_landmarks[0]
+                    has_face = True
+                    draw_face(frame, self.last_face, w, h)
+                    smile_score = check_smile(self.last_face)
 
-            finger_near_mouth = False
-            if hands_res.multi_hand_landmarks:
-                hand_count = len(hands_res.multi_hand_landmarks)
-                for hand_lm in hands_res.multi_hand_landmarks:
-                    draw_hand(frame, hand_lm, w, h)
-                    if check_index_finger_up(hand_lm):
-                        has_index_up = True
-                        if has_face and check_finger_near_mouth(hand_lm, self.last_face):
-                            finger_near_mouth = True
+                finger_near_mouth = False
+                if hands_res.multi_hand_landmarks:
+                    hand_count = len(hands_res.multi_hand_landmarks)
+                    for hand_lm in hands_res.multi_hand_landmarks:
+                        draw_hand(frame, hand_lm, w, h)
+                        if check_index_finger_up(hand_lm):
+                            has_index_up = True
+                            if has_face and check_finger_near_mouth(hand_lm, self.last_face):
+                                finger_near_mouth = True
 
-            # Compute match score based on index finger pointing up and face smiling
-            if has_index_up:
-                self.match_score = smile_score
-            else:
-                self.match_score = 0
+                # Compute match score based on index finger pointing up and face smiling
+                if has_index_up:
+                    self.match_score = smile_score
+                else:
+                    self.match_score = 0
 
-            # Pose 1: Smiling + Index finger pointing up
-            matched_1 = has_index_up and (smile_score >= 75)
-            # Pose 2: Index finger raised and near/touching the mouth (thinking/biting pose)
-            matched_2 = has_index_up and finger_near_mouth
+                # Pose 1: Smiling + Index finger pointing up
+                matched_1 = has_index_up and (smile_score >= 75)
+                # Pose 2: Index finger raised and near/touching the mouth (thinking/biting pose)
+                matched_2 = has_index_up and finger_near_mouth
 
-            if matched_1:
-                self.matched = True
-                self.active_ref = 1
-            elif matched_2:
-                self.matched = True
-                self.active_ref = 2
-            else:
-                self.matched = False
+                if matched_1:
+                    self.matched = True
+                    self.active_ref = 1
+                elif matched_2:
+                    self.matched = True
+                    self.active_ref = 2
+                else:
+                    self.matched = False
 
-            if self.matched:
-                self.match_hold_time = time.time() + 1.5  # hold for 1.5s
+                if self.matched:
+                    self.match_hold_time = time.time() + 1.5  # hold for 1.5s
 
-            # FPS
-            now = time.time()
-            self.fps = 0.9 * self.fps + 0.1 / max(now - self.last_time, 0.001)
-            self.last_time = now
+                # FPS
+                now = time.time()
+                self.fps = 0.9 * self.fps + 0.1 / max(now - self.last_time, 0.001)
+                self.last_time = now
 
-            # --- GUI ---
-            # Bottom bar removed as per user request
+                # Status
+                parts = []
+                if has_arms: parts.append("Arms")
+                if has_face: parts.append("Face")
+                if hand_count: parts.append(f"Hands({hand_count})")
+                status = f"Tracking: {', '.join(parts)}" if parts else "No detection"
+                cv2.putText(frame, status, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                            (0,255,0) if parts else (0,0,255), 2, cv2.LINE_AA)
 
-            # Status
-            parts = []
-            if has_arms: parts.append("Arms")
-            if has_face: parts.append("Face")
-            if hand_count: parts.append(f"Hands({hand_count})")
-            status = f"Tracking: {', '.join(parts)}" if parts else "No detection"
-            cv2.putText(frame, status, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                        (0,255,0) if parts else (0,0,255), 2, cv2.LINE_AA)
+                cv2.putText(frame, f"FPS:{self.fps:.0f}", (560, 30),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (150,150,150), 1, cv2.LINE_AA)
 
-            # Hint removed as per user request
+                # If matched, show reference image in a separate window, 100% clearly
+                if self.matched or now < self.match_hold_time:
+                    if not self.ref_window_open:
+                        cv2.namedWindow("Matched Image", cv2.WINDOW_AUTOSIZE)
+                        self.ref_window_open = True
+                    
+                    # Select the matched reference image
+                    ref_to_show = self.ref_img1 if self.active_ref == 1 else self.ref_img2
+                    cv2.imshow("Matched Image", ref_to_show)
+                    
+                    cv2.putText(frame, "MATCH!", (250, 80),
+                                cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0,255,0), 3, cv2.LINE_AA)
+                else:
+                    if self.ref_window_open:
+                        try:
+                            cv2.destroyWindow("Matched Image")
+                        except cv2.error:
+                            pass
+                        self.ref_window_open = False
+                        self.active_ref = None
 
-            # Match score bar removed as per user request
+                cv2.imshow(self.WIN, frame)
 
-            cv2.putText(frame, f"FPS:{self.fps:.0f}", (560, 30),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (150,150,150), 1, cv2.LINE_AA)
-
-            # Reference image preview omitted when not matching (as per user request)
-            pass
-
-            # If matched, show reference image in a separate window, 100% clearly
-            if self.matched or now < self.match_hold_time:
-                if not self.ref_window_open:
-                    cv2.namedWindow("Matched Image", cv2.WINDOW_AUTOSIZE)
-                    self.ref_window_open = True
-                
-                # Select the matched reference image
-                ref_to_show = self.ref_img1 if self.active_ref == 1 else self.ref_img2
-                cv2.imshow("Matched Image", ref_to_show)
-                
-                cv2.putText(frame, "MATCH!", (250, 80),
-                            cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0,255,0), 3, cv2.LINE_AA)
-            else:
-                if self.ref_window_open:
-                    try:
-                        cv2.destroyWindow("Matched Image")
-                    except cv2.error:
-                        pass
-                    self.ref_window_open = False
-                    self.active_ref = None
-
-            cv2.imshow(self.WIN, frame)
-
-            key = cv2.waitKey(1) & 0xFF
-            if key == ord("q") or key == 27:
-                break
-
-        self.cap.release()
-        self.pose.close()
-        self.face_mesh.close()
-        self.hands.close()
-        cv2.destroyAllWindows()
+                key = cv2.waitKey(1) & 0xFF
+                if key == ord("q") or key == 27:
+                    break
+                # Small sleep to reduce CPU load
+                time.sleep(0.01)
+        except Exception as e:
+            sys.stderr.write(f"Error in main loop: {e}\n")
+        finally:
+            self.cap.release()
+            self.pose.close()
+            self.face_mesh.close()
+            self.hands.close()
+            cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
     PoseMatcher()
+
