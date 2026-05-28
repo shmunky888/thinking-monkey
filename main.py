@@ -138,6 +138,11 @@ def draw_hand(canvas: Any, hand_lm: Any, w: int, h: int, color: Tuple[int, int, 
 
 def normalize_landmarks(landmarks: Any) -> Dict[str, Tuple[float, float]]:
     """Normalize pose landmarks relative to torso center and size."""
+    # Validate required landmark indices exist
+    required_indices = [11, 12, 23, 24]
+    for idx in required_indices:
+        if idx >= len(landmarks):
+            return {}
     # Use shoulder midpoint and torso length as reference
     l_sh = landmarks[11]
     r_sh = landmarks[12]
@@ -377,6 +382,7 @@ class PoseMatcher:
                 hand_count = 0
                 has_index_up = False
                 smile_score = 0
+                self.last_face = None  # Initialize to prevent AttributeError
 
                 if pose_res.pose_landmarks:
                     lm = pose_res.pose_landmarks.landmark
@@ -390,7 +396,7 @@ class PoseMatcher:
                     smile_score = check_smile(self.last_face)
 
                 finger_near_mouth = False
-                if hands_res.multi_hand_landmarks:
+                if hands_res.multi_hand_landmarks and self.last_face:
                     hand_count = len(hands_res.multi_hand_landmarks)
                     for hand_lm in hands_res.multi_hand_landmarks:
                         draw_hand(frame, hand_lm, w, h)
