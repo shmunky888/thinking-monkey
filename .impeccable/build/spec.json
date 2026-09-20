@@ -1,0 +1,908 @@
+{
+  "tool": "comp-spec",
+  "version": 1,
+  "createdAt": "2026-09-20T08:05:38.821Z",
+  "comp": ".impeccable/mocks/decision/camera.png",
+  "warnings": [
+    "region camera: the artwork runs off the box on the right and bottom (its ink reaches the edge over 35% of that side). Widen the region so the box holds the whole shape with a margin; a plate placed with object-fit: cover on this box would be cut there.",
+    "region reaction: the artwork runs off the box on the bottom (its ink reaches the edge over 35% of that side). Widen the region so the box holds the whole shape with a margin; a plate placed with object-fit: cover on this box would be cut there."
+  ],
+  "uncoveredInkCells": [],
+  "compSize": {
+    "width": 1536,
+    "height": 1024
+  },
+  "aspect": 1.5,
+  "orientation": "landscape",
+  "palette": [
+    {
+      "hex": "#ebecec",
+      "coverage": 0.3893
+    },
+    {
+      "hex": "#1b1819",
+      "coverage": 0.2947
+    },
+    {
+      "hex": "#514b48",
+      "coverage": 0.2073
+    },
+    {
+      "hex": "#746151",
+      "coverage": 0.0559
+    },
+    {
+      "hex": "#b38d7f",
+      "coverage": 0.0528
+    }
+  ],
+  "bands": [
+    {
+      "y": 0.0353,
+      "strength": 0.224
+    },
+    {
+      "y": 0.0706,
+      "strength": 1
+    },
+    {
+      "y": 0.4941,
+      "strength": 0.3955
+    },
+    {
+      "y": 0.8588,
+      "strength": 1
+    },
+    {
+      "y": 0.8941,
+      "strength": 0.301
+    }
+  ],
+  "regions": [
+    {
+      "id": "header",
+      "kind": "chrome",
+      "note": "flat silver application header",
+      "grid": "A0:J0",
+      "snap": false,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 0.0557
+      },
+      "px": {
+        "x": 0,
+        "y": 0,
+        "w": 1536,
+        "h": 57
+      },
+      "aspect": 26.9474,
+      "palette": [
+        {
+          "hex": "#e8e8e8",
+          "coverage": 0.9739
+        },
+        {
+          "hex": "#080c14",
+          "coverage": 0.0093
+        },
+        {
+          "hex": "#505459",
+          "coverage": 0.0077
+        },
+        {
+          "hex": "#888d8d",
+          "coverage": 0.0068
+        },
+        {
+          "hex": "#acafb4",
+          "coverage": 0.0023
+        }
+      ],
+      "detail": {
+        "energy": 11.0075
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "title",
+      "kind": "text",
+      "note": "Pose Matcher application title",
+      "grid": "A0:B0",
+      "snap": false,
+      "box": {
+        "x": 0.0169,
+        "y": 0.0166,
+        "w": 0.1328,
+        "h": 0.0313
+      },
+      "px": {
+        "x": 26,
+        "y": 17,
+        "w": 204,
+        "h": 32
+      },
+      "aspect": 6.375,
+      "palette": [
+        {
+          "hex": "#e7e8e8",
+          "coverage": 0.7677
+        },
+        {
+          "hex": "#090c16",
+          "coverage": 0.1236
+        },
+        {
+          "hex": "#a7aaae",
+          "coverage": 0.0462
+        },
+        {
+          "hex": "#646a70",
+          "coverage": 0.0326
+        },
+        {
+          "hex": "#303840",
+          "coverage": 0.0299
+        }
+      ],
+      "detail": {
+        "energy": 55.0889
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 11,
+          "capHeightPx": 21.4,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.5836,
+          "advTall": 0.7004,
+          "advX": 0.5836,
+          "gap": 0.0934,
+          "xRatio": 0.6803,
+          "stemW": 0.1742,
+          "contrast": 1.1666,
+          "serif": 0.9115,
+          "densTall": 0.5004,
+          "densX": 0.6204,
+          "weight": 0.5004
+        },
+        "widthClass": "condensed",
+        "weightClass": "medium",
+        "chosen": {
+          "family": "Mukta Mahee",
+          "weight": 400,
+          "fontSizePx": 31,
+          "source": "catalog",
+          "estimatedSize": true,
+          "stamp": "e71dc3720f97"
+        }
+      }
+    },
+    {
+      "id": "camera-state",
+      "kind": "text",
+      "note": "Camera connected state",
+      "grid": "G0:I0",
+      "snap": false,
+      "box": {
+        "x": 0.6895,
+        "y": 0.0166,
+        "w": 0.1504,
+        "h": 0.0273
+      },
+      "px": {
+        "x": 1059,
+        "y": 17,
+        "w": 231,
+        "h": 28
+      },
+      "aspect": 8.25,
+      "palette": [
+        {
+          "hex": "#e7e8e8",
+          "coverage": 0.867
+        },
+        {
+          "hex": "#5a5e60",
+          "coverage": 0.0743
+        },
+        {
+          "hex": "#9b9fa2",
+          "coverage": 0.0417
+        },
+        {
+          "hex": "#48c668",
+          "coverage": 0.0117
+        },
+        {
+          "hex": "#a4d4b8",
+          "coverage": 0.0052
+        }
+      ],
+      "detail": {
+        "energy": 29.0865
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "camera",
+      "kind": "image",
+      "note": "runtime live webcam content; illustrative human in comp is never a shipping asset",
+      "grid": "A0:G8",
+      "snap": false,
+      "box": {
+        "x": 0.0137,
+        "y": 0.0703,
+        "w": 0.6563,
+        "h": 0.791
+      },
+      "px": {
+        "x": 21,
+        "y": 72,
+        "w": 1008,
+        "h": 810
+      },
+      "aspect": 1.2444,
+      "palette": [
+        {
+          "hex": "#1a1819",
+          "coverage": 0.4629
+        },
+        {
+          "hex": "#524c48",
+          "coverage": 0.3501
+        },
+        {
+          "hex": "#b38d80",
+          "coverage": 0.079
+        },
+        {
+          "hex": "#746354",
+          "coverage": 0.0736
+        },
+        {
+          "hex": "#332b1b",
+          "coverage": 0.0344
+        }
+      ],
+      "detail": {
+        "energy": 15.0059
+      },
+      "medium": "raster",
+      "clipped": [
+        "right",
+        "bottom"
+      ],
+      "plate": "assets/plates/camera.png",
+      "text": null
+    },
+    {
+      "id": "reaction",
+      "kind": "image",
+      "note": "runtime matched reaction, uses the original repository image rather than generated monkey",
+      "grid": "G0:J4",
+      "snap": false,
+      "box": {
+        "x": 0.6829,
+        "y": 0.0703,
+        "w": 0.3034,
+        "h": 0.418
+      },
+      "px": {
+        "x": 1049,
+        "y": 72,
+        "w": 466,
+        "h": 428
+      },
+      "aspect": 1.0888,
+      "palette": [
+        {
+          "hex": "#7c8250",
+          "coverage": 0.3667
+        },
+        {
+          "hex": "#241b19",
+          "coverage": 0.2524
+        },
+        {
+          "hex": "#3d3126",
+          "coverage": 0.1487
+        },
+        {
+          "hex": "#64493c",
+          "coverage": 0.1393
+        },
+        {
+          "hex": "#906e58",
+          "coverage": 0.0929
+        }
+      ],
+      "detail": {
+        "energy": 15.6398
+      },
+      "medium": "raster",
+      "clipped": [
+        "bottom"
+      ],
+      "plate": "assets/plates/reaction.png",
+      "text": null
+    },
+    {
+      "id": "match-state",
+      "kind": "control",
+      "note": "Matched feedback strip",
+      "grid": "G4:J5",
+      "snap": false,
+      "box": {
+        "x": 0.6829,
+        "y": 0.499,
+        "w": 0.3034,
+        "h": 0.0537
+      },
+      "px": {
+        "x": 1049,
+        "y": 511,
+        "w": 466,
+        "h": 55
+      },
+      "aspect": 8.4727,
+      "palette": [
+        {
+          "hex": "#d9e8d8",
+          "coverage": 0.9481
+        },
+        {
+          "hex": "#142424",
+          "coverage": 0.0176
+        },
+        {
+          "hex": "#a5b4a6",
+          "coverage": 0.0136
+        },
+        {
+          "hex": "#0e1727",
+          "coverage": 0.0105
+        },
+        {
+          "hex": "#4d5c59",
+          "coverage": 0.0102
+        }
+      ],
+      "detail": {
+        "energy": 17.6975
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "smile-row",
+      "kind": "chrome",
+      "note": "offwhite rounded gesture row",
+      "grid": "G5:J7",
+      "snap": false,
+      "box": {
+        "x": 0.6829,
+        "y": 0.5684,
+        "w": 0.3034,
+        "h": 0.1328
+      },
+      "px": {
+        "x": 1049,
+        "y": 582,
+        "w": 466,
+        "h": 136
+      },
+      "aspect": 3.4265,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9509
+        },
+        {
+          "hex": "#0a0d17",
+          "coverage": 0.0166
+        },
+        {
+          "hex": "#252d35",
+          "coverage": 0.0123
+        },
+        {
+          "hex": "#4d5357",
+          "coverage": 0.011
+        },
+        {
+          "hex": "#db6e30",
+          "coverage": 0.0092
+        }
+      ],
+      "detail": {
+        "energy": 28.0292
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "smile-title",
+      "kind": "text",
+      "note": "Smile + finger up",
+      "grid": "H6:J6",
+      "snap": false,
+      "box": {
+        "x": 0.7852,
+        "y": 0.6055,
+        "w": 0.1862,
+        "h": 0.0293
+      },
+      "px": {
+        "x": 1206,
+        "y": 620,
+        "w": 286,
+        "h": 30
+      },
+      "aspect": 9.5333,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.8104
+        },
+        {
+          "hex": "#090d17",
+          "coverage": 0.0948
+        },
+        {
+          "hex": "#8b9095",
+          "coverage": 0.0394
+        },
+        {
+          "hex": "#bec1c2",
+          "coverage": 0.0373
+        },
+        {
+          "hex": "#525862",
+          "coverage": 0.0181
+        }
+      ],
+      "detail": {
+        "energy": 65.5262
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "smile-copy",
+      "kind": "text",
+      "note": "Raise your index finger and smile.",
+      "grid": "H6:J6",
+      "snap": false,
+      "box": {
+        "x": 0.7852,
+        "y": 0.6455,
+        "w": 0.1868,
+        "h": 0.0313
+      },
+      "px": {
+        "x": 1206,
+        "y": 661,
+        "w": 287,
+        "h": 32
+      },
+      "aspect": 8.9688,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.8295
+        },
+        {
+          "hex": "#c2c3c5",
+          "coverage": 0.072
+        },
+        {
+          "hex": "#58595b",
+          "coverage": 0.0521
+        },
+        {
+          "hex": "#848789",
+          "coverage": 0.0407
+        },
+        {
+          "hex": "#3d3d48",
+          "coverage": 0.0057
+        }
+      ],
+      "detail": {
+        "energy": 49.2866
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "thinking-row",
+      "kind": "chrome",
+      "note": "offwhite rounded gesture row",
+      "grid": "G7:J8",
+      "snap": false,
+      "box": {
+        "x": 0.6829,
+        "y": 0.7168,
+        "w": 0.3034,
+        "h": 0.1445
+      },
+      "px": {
+        "x": 1049,
+        "y": 734,
+        "w": 466,
+        "h": 148
+      },
+      "aspect": 3.1486,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9435
+        },
+        {
+          "hex": "#141727",
+          "coverage": 0.0171
+        },
+        {
+          "hex": "#777b7f",
+          "coverage": 0.0143
+        },
+        {
+          "hex": "#454a50",
+          "coverage": 0.013
+        },
+        {
+          "hex": "#b1b2b3",
+          "coverage": 0.0121
+        }
+      ],
+      "detail": {
+        "energy": 26.6297
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "thinking-title",
+      "kind": "text",
+      "note": "Thinking pose",
+      "grid": "H7:J7",
+      "snap": false,
+      "box": {
+        "x": 0.7852,
+        "y": 0.749,
+        "w": 0.1862,
+        "h": 0.0293
+      },
+      "px": {
+        "x": 1206,
+        "y": 767,
+        "w": 286,
+        "h": 30
+      },
+      "aspect": 9.5333,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.8408
+        },
+        {
+          "hex": "#090a16",
+          "coverage": 0.112
+        },
+        {
+          "hex": "#2b333e",
+          "coverage": 0.0209
+        },
+        {
+          "hex": "#b0b2b5",
+          "coverage": 0.0178
+        },
+        {
+          "hex": "#707478",
+          "coverage": 0.0084
+        }
+      ],
+      "detail": {
+        "energy": 58.088
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "thinking-copy",
+      "kind": "text",
+      "note": "Bring your raised finger near your mouth.",
+      "grid": "H7:J8",
+      "snap": false,
+      "box": {
+        "x": 0.7852,
+        "y": 0.7891,
+        "w": 0.1868,
+        "h": 0.0449
+      },
+      "px": {
+        "x": 1206,
+        "y": 808,
+        "w": 287,
+        "h": 46
+      },
+      "aspect": 6.2391,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.8724
+        },
+        {
+          "hex": "#7f8182",
+          "coverage": 0.0521
+        },
+        {
+          "hex": "#4e5256",
+          "coverage": 0.043
+        },
+        {
+          "hex": "#b7b9ba",
+          "coverage": 0.0326
+        }
+      ],
+      "detail": {
+        "energy": 40.4439
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "toolbar",
+      "kind": "chrome",
+      "note": "flat silver lower toolbar",
+      "grid": "A8:J9",
+      "snap": false,
+      "box": {
+        "x": 0,
+        "y": 0.8809,
+        "w": 1,
+        "h": 0.1191
+      },
+      "px": {
+        "x": 0,
+        "y": 902,
+        "w": 1536,
+        "h": 122
+      },
+      "aspect": 12.5902,
+      "palette": [
+        {
+          "hex": "#eaeaea",
+          "coverage": 0.8776
+        },
+        {
+          "hex": "#d86828",
+          "coverage": 0.1087
+        },
+        {
+          "hex": "#aeb7b9",
+          "coverage": 0.009
+        },
+        {
+          "hex": "#121626",
+          "coverage": 0.0035
+        },
+        {
+          "hex": "#112121",
+          "coverage": 0.0013
+        }
+      ],
+      "detail": {
+        "energy": 15.1955
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "camera-control",
+      "kind": "control",
+      "note": "orange Pause camera button",
+      "grid": "A8:B9",
+      "snap": false,
+      "box": {
+        "x": 0.0156,
+        "y": 0.8945,
+        "w": 0.1849,
+        "h": 0.0752
+      },
+      "px": {
+        "x": 24,
+        "y": 916,
+        "w": 284,
+        "h": 77
+      },
+      "aspect": 3.6883,
+      "palette": [
+        {
+          "hex": "#d86828",
+          "coverage": 0.8808
+        },
+        {
+          "hex": "#eccab6",
+          "coverage": 0.0549
+        },
+        {
+          "hex": "#f6f4f1",
+          "coverage": 0.0411
+        },
+        {
+          "hex": "#e18a58",
+          "coverage": 0.0146
+        },
+        {
+          "hex": "#e5a67d",
+          "coverage": 0.0085
+        }
+      ],
+      "detail": {
+        "energy": 16.2897
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "overlay-control",
+      "kind": "control",
+      "note": "Overlay on toggle",
+      "grid": "C8:D9",
+      "snap": false,
+      "box": {
+        "x": 0.2103,
+        "y": 0.8945,
+        "w": 0.1608,
+        "h": 0.0752
+      },
+      "px": {
+        "x": 323,
+        "y": 916,
+        "w": 247,
+        "h": 77
+      },
+      "aspect": 3.2078,
+      "palette": [
+        {
+          "hex": "#f6f6f6",
+          "coverage": 0.9311
+        },
+        {
+          "hex": "#0e1321",
+          "coverage": 0.0366
+        },
+        {
+          "hex": "#636971",
+          "coverage": 0.0131
+        },
+        {
+          "hex": "#949b9c",
+          "coverage": 0.0122
+        },
+        {
+          "hex": "#273537",
+          "coverage": 0.007
+        }
+      ],
+      "detail": {
+        "energy": 23.8664
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "fps",
+      "kind": "text",
+      "note": "stable FPS readout",
+      "grid": "I9:I9",
+      "snap": false,
+      "box": {
+        "x": 0.8138,
+        "y": 0.9219,
+        "w": 0.0469,
+        "h": 0.0313
+      },
+      "px": {
+        "x": 1250,
+        "y": 944,
+        "w": 72,
+        "h": 32
+      },
+      "aspect": 2.25,
+      "palette": [
+        {
+          "hex": "#e8e8e8",
+          "coverage": 0.8788
+        },
+        {
+          "hex": "#394245",
+          "coverage": 0.0682
+        },
+        {
+          "hex": "#65666e",
+          "coverage": 0.0379
+        },
+        {
+          "hex": "#94989c",
+          "coverage": 0.0152
+        }
+      ],
+      "detail": {
+        "energy": 14.4644
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "quit-control",
+      "kind": "control",
+      "note": "Quit button",
+      "grid": "I8:J9",
+      "snap": false,
+      "box": {
+        "x": 0.8835,
+        "y": 0.8945,
+        "w": 0.1009,
+        "h": 0.0752
+      },
+      "px": {
+        "x": 1357,
+        "y": 916,
+        "w": 155,
+        "h": 77
+      },
+      "aspect": 2.013,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9266
+        },
+        {
+          "hex": "#c0c1c1",
+          "coverage": 0.0341
+        },
+        {
+          "hex": "#111b27",
+          "coverage": 0.0311
+        },
+        {
+          "hex": "#939898",
+          "coverage": 0.0044
+        },
+        {
+          "hex": "#424e4e",
+          "coverage": 0.0037
+        }
+      ],
+      "detail": {
+        "energy": 13.1905
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    }
+  ]
+}

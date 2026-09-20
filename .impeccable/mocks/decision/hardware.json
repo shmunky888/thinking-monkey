@@ -1,0 +1,10 @@
+{
+  "use_case": "ui-mockup",
+  "direction": "Creator hardware desk controller",
+  "image": "hardware.png",
+  "prompt_file": "hardware.prompt.txt",
+  "generator": "built-in image_gen",
+  "requested_dimensions": "1200x800",
+  "generated_dimensions": "1536x1024",
+  "prompt_embedded": true
+}

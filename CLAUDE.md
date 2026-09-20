@@ -1,55 +1,38 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Repository guidance. Last updated: 2026-09-20.
 
-## Run
+## Run and dependencies
 
-```bash
-./run.sh                    # runs via venv/bin/python main.py
-./venv/bin/python main.py   # direct invocation
-```
+Use Python 3.12 with the local `venv/`. Install `requirements.txt` with `./venv/bin/python -m pip install -r requirements.txt`, then run `./run.sh` or `./venv/bin/python main.py`. Dependencies are MediaPipe, NumPy, OpenCV contrib, and PySide6. The GUI is a single native Qt window. Camera access is requested only after Start camera.
 
-Requires a webcam connected to the machine. Press Q or ESC to quit.
-Camera or model failures exit with an error and release acquired resources.
-
-## Dependencies
-
-Python 3.12 virtualenv in `venv/`. Key packages: `opencv-python`, `mediapipe`, `numpy`.
-
-```bash
-./venv/bin/pip install <package>   # always use venv pip, not system pip
-```
-
-No tkinter — this is Homebrew Python; GUI is via OpenCV windows.
+Space starts/pauses/resumes capture, O toggles overlay visibility, and Q/Esc quits. Pause releases the webcam. Startup, stopping, off, live, and failure states are explicit; recoverable failures show Retry camera after cleanup. The overlay button is disabled until the camera starts. The status dot pulses while the camera is live.
 
 ## Architecture
 
-Single-file app (`main.py`) that runs a real-time pose matcher using the webcam.
+- `main.py`: `PoseMatcher` loads reaction images. `frames(stop, overlay)` opens the webcam and sequentially runs MediaPipe Pose, FaceMesh, and Hands on mirrored frames. Its `ExitStack` releases the camera and models on completion, initialization failure, or iterator closure. `run()` launches `gui.run_gui()`.
+- `TrackingState`: immutable per-frame detection state, active reference, match flag, and smoothed FPS.
+- `gui.py`: `PoseWindow` owns the UI. `CameraWorker` runs capture/inference on a `QThread`, with stop/overlay events and a locked one-slot latest-frame mailbox. A 33ms UI timer consumes available frames without accumulating a queue. An 800ms dot timer pulses the status indicator while the camera is live. Closing waits for worker cleanup without blocking the UI thread.
+- `ImageView`: owns copied `QImage` pixels and paints images with preserved aspect ratio. Camera and reaction stay in the same window.
 
-**Detection pipeline** — each frame runs three MediaPipe models sequentially:
-1. `mp.solutions.pose` — body skeleton (arms, shoulders, hips, legs)
-2. `mp.solutions.face_mesh` — face landmarks with refinement enabled
-3. `mp.solutions.hands` — 21-point hand landmarks per hand
+## Detector invariants
 
-**Two pose modes:**
-- **Pose 1 (smile + finger up):** Index finger pointed up + smile score >= 75% → shows `f139fdf3202282f05db2fc08ef97ea0b.jpg`
-- **Pose 2 (thinking):** Index finger pointed up with the other fingers folded, near the mouth in the image → shows `think_monkey.png`
+- `check_index_finger_up()` requires the index tip above its PIP and the other fingers folded, with the existing relaxed tolerances.
+- `check_smile()` maps the 3D mouth-width/face-width ratio to a clamped 0–100 score. A score of at least 75 plus a raised index finger selects reference 1.
+- `check_finger_near_mouth()` measures normalized **2D image distance** from index tip to mouth center; the default threshold is 0.12. Hand/face depth origins differ. This does not prove physical contact.
+- A raised index finger near the mouth selects reference 2. Smile has priority when both match. Each matching frame renews the 1.5-second hold.
+- Disabling the overlay changes drawing only, not detection or matching.
 
-Match triggers a 1.5s hold that displays the reference image in a separate OpenCV window.
-Pose 1 takes priority when both match. Each matching frame renews the hold.
+## Assets and visual system
 
-**Key internals:**
-- `PoseMatcher()` — loads reference images; `.run()` owns the camera, models, windows, and their cleanup using `ExitStack`
-- `check_index_finger_up()` — detects index pointing up with other fingers folded
-- `check_smile()` — mouth-width-to-face-width ratio mapped to 0-100
-- `check_finger_near_mouth()` — 2D normalized image distance between index tip and mouth center; adjustable threshold defaults to 0.12. Hand and face depth have different origins, so this checks image proximity, not physical contact.
-- `make_reference_image()` — generates a stick-figure T-pose fallback if reference images are missing
+Original reaction sources are `f139fdf3202282f05db2fc08ef97ea0b.jpg` (smile) and `think_monkey.png` (thinking). They resolve relative to `main.py`; `make_reference_image()` provides a synthetic T-pose fallback.
 
-## Reference images
+Follow `DESIGN.md`, the QSS in `gui.py`, and `.impeccable/surfaces/main-py.md`. The approved Camera workspace uses Qt system typography, a 7:3 camera/sidebar layout, a 1200×800 default and 900×650 minimum, explicit keyboard focus, and a 180ms match-strip opacity transition. `.impeccable/design.json` has static HTML/CSS documentation equivalents, not application components.
 
-Two images in repo root: a smile reference (`f139...jpg`) and a thinking/monkey reference (`think_monkey.png`). If missing, `make_reference_image()` generates a synthetic T-pose fallback.
-Images are resolved relative to `main.py`, independent of the working directory.
+## Verification
 
-## .gitignore
+```bash
+QT_QPA_PLATFORM=offscreen ./venv/bin/python -m unittest test_gui
+```
 
-Ignores `venv/`, `__pycache__/`, `*.pyc`, `.DS_Store`.
+The ignored local `test_main.py` also runs this suite plus the previous geometry checks. Keep tests independent of a real webcam. Inspect native evidence in `.impeccable/build/native-verification.json`; do not claim web gates passed for this desktop app. Actual webcam/permission behavior needs physical-camera verification.

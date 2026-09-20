@@ -1,0 +1,18 @@
+{
+  "direction": "canon",
+  "title": "Conventional native camera app",
+  "generation_mode": "built-in image_gen",
+  "image": "canon.png",
+  "prompt_file": "canon.prompt.txt",
+  "prompt": "Use case: ui-mockup\nAsset type: decision-preview desktop application GUI screenshot.\nCreate a high-fidelity flat 1200x800 desktop GUI screenshot for \"Pose Matcher\", a casual local Python webcam pose matching app. Conventional modern native camera application design. Neutral grey #F4F5F7 background, white panels #FFFFFF, charcoal #25282D text, familiar blue #346BC9 controls. Native sans typography, careful spacing and comfortable sizes, clean small-radius panels and thin borders.\nWindow is rectangular and fills entire image. Compact top title bar says \"Pose Matcher\". Camera preview takes about two thirds of window width, guidance sidebar at right. Main camera shows an illustrative adult smiling and raising one index finger, naturally lit at home, with subtle warm white body/hand skeleton lines. Label camera prominently \"Illustrative camera preview\", and small caption \"Smile + finger up\". Sidebar white card titled \"Reaction\" contains a realistic playful monkey photo preview. Underneath, \"Try a pose\" contains clear two-item guidance: \"Smile + finger up\" then \"Smile and raise one index finger.\"; \"Thinking pose\" then \"Rest a hand beneath your chin.\" Selected first pose uses subtle blue highlight.\nBottom toolbar contains native comfortable buttons \"Pause camera\", \"Overlay on\", and \"Quit\". Small neutral footer label \"Camera ready\". All content and controls legible at desktop size. Flat screenshot, no device surround, no perspective, no large marketing headers. No fake scores, recordings, accounts, upload, commercial claims, graphs, unrelated navigation. No additional controls or functionality.",
+  "requested_dimensions": {
+    "width": 1200,
+    "height": 800
+  },
+  "actual_dimensions": {
+    "width": 1536,
+    "height": 1024
+  },
+  "source": "/Users/shmunky/.codex/generated_images/01a0bdd2-4b01-7440-b3fb-2efd0c7ccd0b/exec-589694d8-1afb-4e06-95fd-2a594101a79f.png",
+  "qa": "Inspected rendered output. Main camera, reaction panel, guidance and requested toolbar labels are legible; neutral palette and blue actions preserved."
+}

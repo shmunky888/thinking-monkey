@@ -1,0 +1,90 @@
+{
+  "title": "Pose Matcher: a new desktop interface",
+  "question": "Choose the interface to build. Both directions keep the camera, pose guidance, and reaction together.",
+  "options": [
+    {
+      "id": "camera",
+      "label": "Camera workspace",
+      "lineage": "Compact digital-camera displays and desktop camera controls",
+      "thesis": "A generous viewfinder beside a precise, quiet reaction panel.",
+      "palette": ["#E7E9E8", "#252B2C", "#FAFBF9", "#DC702E"],
+      "materials": ["matte silver controls", "graphite viewfinder", "plain sans-serif labels"],
+      "viewport": "Camera takes two thirds of the window; the right panel holds pose instructions and the match; camera and overlay controls sit below.",
+      "risk": "Quiet precision depends on excellent spacing and real controls, not decorative camera chrome.",
+      "raised": [
+        {"from":"Industrial labels","raise":"Every control says exactly what it does."},
+        {"from":"Deep dive","raise":"State changes must remain legible across the whole camera session."},
+        {"from":"Consumer app","raise":"Controls get generous targets and plain-language empty states."},
+        {"from":"Laboratory counter","raise":"Live measurements have stable positions and never move neighboring controls."},
+        {"from":"Arcade screen","raise":"A matched pose earns one immediate, unmistakable reaction reveal."}
+      ],
+      "comp": ".impeccable/mocks/decision/camera.png"
+    },
+    {
+      "id": "hardware",
+      "label": "Desk controller",
+      "verdict": "competitive",
+      "lineage": "Creator-hardware desk instruments",
+      "thesis": "The camera becomes a desktop instrument with distinct physical-looking control keys.",
+      "palette": ["#313637", "#DAD9D3", "#F26E31", "#EABF68"],
+      "materials": ["gunmetal frame", "putty keys", "amber status"],
+      "viewport": "A wide camera and reaction monitor sit above grouped camera, overlay, and exit keys.",
+      "case": "Strong control clarity; less familiar to casual users than a camera workspace.",
+      "risk": "Tactile controls can compete with the camera if the hardware metaphor gets too heavy.",
+      "hero": "https://impeccable.style/worlds/cards/design-canon-creator-hardware-bench-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/design-canon-creator-hardware-bench.webp",
+      "comp": ".impeccable/mocks/decision/hardware.png"
+    },
+    {
+      "id":"industrial", "label":"Industrial labels", "verdict":"declined",
+      "thesis":"Camera zones marked like equipment labels.", "palette":["#FFFFFF","#151515","#EF752F"],
+      "materials":["black labels","orange tags"], "viewport":"Large labeled camera and reaction zones.",
+      "case":"The labels distract from the playful content and add reading work.",
+      "kept":"Direct, literal control labels.", "risk":"Heavy labels can dominate the subject.",
+      "hero":"https://impeccable.style/worlds/cards/textiles-weave-drape-fashion-industrial-quote-grammar-hero.webp"
+    },
+    {
+      "id":"dive", "label":"Deep dive", "verdict":"declined",
+      "thesis":"A depth-like sequence guides each pose.", "palette":["#0B1828","#125075","#79D9E6"],
+      "materials":["deep blue fields","cyan state bands"], "viewport":"Camera alongside a vertical pose progression.",
+      "case":"A staged journey misrepresents two gestures that are always available.",
+      "kept":"Clearly distinguish every camera state.", "risk":"Unrelated underwater language obscures the task.",
+      "hero":"https://impeccable.style/worlds/cards/rivers-tides-ocean-depths-mesophotic-deep-dive-hero.webp"
+    },
+    {
+      "id":"consumer", "label":"Soft consumer app", "verdict":"declined",
+      "thesis":"A friendly stack of camera and pose cards.", "palette":["#F4F1EC","#FFFFFF","#3972D5"],
+      "materials":["soft cards","friendly labels"], "viewport":"Camera and reactions stacked over a bottom toolbar.",
+      "case":"The scrolling card stack weakens simultaneous camera and reaction viewing.",
+      "kept":"Generous targets and understandable empty states.", "risk":"The generic card treatment could repeat the look you want to leave behind.",
+      "hero":"https://impeccable.style/worlds/cards/digital-design-canon-warm-consumer-app-surface-hero.webp"
+    },
+    {
+      "id":"counter", "label":"Laboratory counter", "verdict":"declined",
+      "thesis":"Pose detection presented through large numeric readouts.", "palette":["#202222","#EF953B","#A3A6A6"],
+      "materials":["dark chassis","amber digits"], "viewport":"Readouts above smaller camera and image panels.",
+      "case":"Numbers are secondary to the human pose and reaction image.",
+      "kept":"Stable measurement positions.", "risk":"A technical measurement tool overwhelms a casual activity.",
+      "hero":"https://impeccable.style/worlds/cards/signals-instruments-nixie-laboratory-counter-hero.webp"
+    },
+    {
+      "id":"arcade", "label":"Arcade screen", "verdict":"declined",
+      "thesis":"Pose matching becomes a pixel-grid playfield.", "palette":["#101018","#EFCB59","#D36BC8"],
+      "materials":["pixel typography","sprite states"], "viewport":"Camera framed by game-style pose indicators.",
+      "case":"Retro pixels conflict with the requested modern GUI and reduce video clarity.",
+      "kept":"A clear, rewarding match reveal.", "risk":"The retro effect could overpower the real images.",
+      "hero":"https://impeccable.style/worlds/cards/medium-native-crt-arcade-pixel-glow-hero.webp"
+    }
+  ],
+  "reroll": {"registers":["safer","bolder"]},
+  "buildPath": {"value":"comp","toggle":true},
+  "canon": true,
+  "canonCard": {
+    "label":"Standard desktop app", "thesis":"A conventional camera application with familiar native controls.",
+    "palette":["#F4F5F7","#FFFFFF","#25282D","#346BC9"], "materials":["neutral panels","standard buttons"],
+    "viewport":"A camera pane, a reaction sidebar, and a conventional toolbar.",
+    "risk":"Familiar and useful, with little distinct identity.",
+    "comp":".impeccable/mocks/decision/canon.png"
+  },
+  "steer": true
+}

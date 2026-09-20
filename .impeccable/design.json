@@ -1,0 +1,482 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-20T08:23:27.685992+00:00",
+  "title": "Design System: Pose Matcher",
+  "extensions": {
+    "colorMeta": {
+      "camera-action": {
+        "role": "primary",
+        "displayName": "Camera action",
+        "tonalRamp": [
+          "oklch(15.00% 0.1607 43.99)",
+          "oklch(26.43% 0.1607 43.99)",
+          "oklch(37.86% 0.1607 43.99)",
+          "oklch(49.29% 0.1607 43.99)",
+          "oklch(60.71% 0.1607 43.99)",
+          "oklch(72.14% 0.1607 43.99)",
+          "oklch(83.57% 0.1607 43.99)",
+          "oklch(95.00% 0.1607 43.99)"
+        ]
+      },
+      "camera-hover": {
+        "role": "primary",
+        "displayName": "Camera hover",
+        "tonalRamp": [
+          "oklch(15.00% 0.1537 43.42)",
+          "oklch(26.43% 0.1537 43.42)",
+          "oklch(37.86% 0.1537 43.42)",
+          "oklch(49.29% 0.1537 43.42)",
+          "oklch(60.71% 0.1537 43.42)",
+          "oklch(72.14% 0.1537 43.42)",
+          "oklch(83.57% 0.1537 43.42)",
+          "oklch(95.00% 0.1537 43.42)"
+        ]
+      },
+      "camera-pressed": {
+        "role": "primary",
+        "displayName": "Camera pressed",
+        "tonalRamp": [
+          "oklch(15.00% 0.1363 43.36)",
+          "oklch(26.43% 0.1363 43.36)",
+          "oklch(37.86% 0.1363 43.36)",
+          "oklch(49.29% 0.1363 43.36)",
+          "oklch(60.71% 0.1363 43.36)",
+          "oklch(72.14% 0.1363 43.36)",
+          "oklch(83.57% 0.1363 43.36)",
+          "oklch(95.00% 0.1363 43.36)"
+        ]
+      },
+      "workspace": {
+        "role": "neutral",
+        "displayName": "Workspace",
+        "tonalRamp": [
+          "oklch(15.00% 0.0025 165.07)",
+          "oklch(26.43% 0.0025 165.07)",
+          "oklch(37.86% 0.0025 165.07)",
+          "oklch(49.29% 0.0025 165.07)",
+          "oklch(60.71% 0.0025 165.07)",
+          "oklch(72.14% 0.0025 165.07)",
+          "oklch(83.57% 0.0025 165.07)",
+          "oklch(95.00% 0.0025 165.07)"
+        ]
+      },
+      "graphite": {
+        "role": "neutral",
+        "displayName": "Graphite",
+        "tonalRamp": [
+          "oklch(15.00% 0.0087 208.74)",
+          "oklch(26.43% 0.0087 208.74)",
+          "oklch(37.86% 0.0087 208.74)",
+          "oklch(49.29% 0.0087 208.74)",
+          "oklch(60.71% 0.0087 208.74)",
+          "oklch(72.14% 0.0087 208.74)",
+          "oklch(83.57% 0.0087 208.74)",
+          "oklch(95.00% 0.0087 208.74)"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Panel",
+        "tonalRamp": [
+          "oklch(15.00% 0.0028 128.49)",
+          "oklch(26.43% 0.0028 128.49)",
+          "oklch(37.86% 0.0028 128.49)",
+          "oklch(49.29% 0.0028 128.49)",
+          "oklch(60.71% 0.0028 128.49)",
+          "oklch(72.14% 0.0028 128.49)",
+          "oklch(83.57% 0.0028 128.49)",
+          "oklch(95.00% 0.0028 128.49)"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "White",
+        "tonalRamp": [
+          "oklch(15.00% 0.0000 89.88)",
+          "oklch(26.43% 0.0000 89.88)",
+          "oklch(37.86% 0.0000 89.88)",
+          "oklch(49.29% 0.0000 89.88)",
+          "oklch(60.71% 0.0000 89.88)",
+          "oklch(72.14% 0.0000 89.88)",
+          "oklch(83.57% 0.0000 89.88)",
+          "oklch(95.00% 0.0000 89.88)"
+        ]
+      },
+      "divider": {
+        "role": "neutral",
+        "displayName": "Divider",
+        "tonalRamp": [
+          "oklch(15.00% 0.0068 160.05)",
+          "oklch(26.43% 0.0068 160.05)",
+          "oklch(37.86% 0.0068 160.05)",
+          "oklch(49.29% 0.0068 160.05)",
+          "oklch(60.71% 0.0068 160.05)",
+          "oklch(72.14% 0.0068 160.05)",
+          "oklch(83.57% 0.0068 160.05)",
+          "oklch(95.00% 0.0068 160.05)"
+        ]
+      },
+      "panel-border": {
+        "role": "neutral",
+        "displayName": "Panel border",
+        "tonalRamp": [
+          "oklch(15.00% 0.0076 151.87)",
+          "oklch(26.43% 0.0076 151.87)",
+          "oklch(37.86% 0.0076 151.87)",
+          "oklch(49.29% 0.0076 151.87)",
+          "oklch(60.71% 0.0076 151.87)",
+          "oklch(72.14% 0.0076 151.87)",
+          "oklch(83.57% 0.0076 151.87)",
+          "oklch(95.00% 0.0076 151.87)"
+        ]
+      },
+      "secondary-text": {
+        "role": "neutral",
+        "displayName": "Secondary text",
+        "tonalRamp": [
+          "oklch(15.00% 0.0113 196.77)",
+          "oklch(26.43% 0.0113 196.77)",
+          "oklch(37.86% 0.0113 196.77)",
+          "oklch(49.29% 0.0113 196.77)",
+          "oklch(60.71% 0.0113 196.77)",
+          "oklch(72.14% 0.0113 196.77)",
+          "oklch(83.57% 0.0113 196.77)",
+          "oklch(95.00% 0.0113 196.77)"
+        ]
+      },
+      "instruction-text": {
+        "role": "neutral",
+        "displayName": "Instruction text",
+        "tonalRamp": [
+          "oklch(15.00% 0.0115 188.70)",
+          "oklch(26.43% 0.0115 188.70)",
+          "oklch(37.86% 0.0115 188.70)",
+          "oklch(49.29% 0.0115 188.70)",
+          "oklch(60.71% 0.0115 188.70)",
+          "oklch(72.14% 0.0115 188.70)",
+          "oklch(83.57% 0.0115 188.70)",
+          "oklch(95.00% 0.0115 188.70)"
+        ]
+      },
+      "neutral-strip": {
+        "role": "neutral",
+        "displayName": "Neutral strip",
+        "tonalRamp": [
+          "oklch(15.00% 0.0076 151.88)",
+          "oklch(26.43% 0.0076 151.88)",
+          "oklch(37.86% 0.0076 151.88)",
+          "oklch(49.29% 0.0076 151.88)",
+          "oklch(60.71% 0.0076 151.88)",
+          "oklch(72.14% 0.0076 151.88)",
+          "oklch(83.57% 0.0076 151.88)",
+          "oklch(95.00% 0.0076 151.88)"
+        ]
+      },
+      "neutral-strip-text": {
+        "role": "neutral",
+        "displayName": "Neutral strip text",
+        "tonalRamp": [
+          "oklch(15.00% 0.0198 156.34)",
+          "oklch(26.43% 0.0198 156.34)",
+          "oklch(37.86% 0.0198 156.34)",
+          "oklch(49.29% 0.0198 156.34)",
+          "oklch(60.71% 0.0198 156.34)",
+          "oklch(72.14% 0.0198 156.34)",
+          "oklch(83.57% 0.0198 156.34)",
+          "oklch(95.00% 0.0198 156.34)"
+        ]
+      },
+      "matched-panel": {
+        "role": "neutral",
+        "displayName": "Matched panel",
+        "tonalRamp": [
+          "oklch(15.00% 0.0192 140.50)",
+          "oklch(26.43% 0.0192 140.50)",
+          "oklch(37.86% 0.0192 140.50)",
+          "oklch(49.29% 0.0192 140.50)",
+          "oklch(60.71% 0.0192 140.50)",
+          "oklch(72.14% 0.0192 140.50)",
+          "oklch(83.57% 0.0192 140.50)",
+          "oklch(95.00% 0.0192 140.50)"
+        ]
+      },
+      "matched-border": {
+        "role": "neutral",
+        "displayName": "Matched border",
+        "tonalRamp": [
+          "oklch(15.00% 0.0678 138.72)",
+          "oklch(26.43% 0.0678 138.72)",
+          "oklch(37.86% 0.0678 138.72)",
+          "oklch(49.29% 0.0678 138.72)",
+          "oklch(60.71% 0.0678 138.72)",
+          "oklch(72.14% 0.0678 138.72)",
+          "oklch(83.57% 0.0678 138.72)",
+          "oklch(95.00% 0.0678 138.72)"
+        ]
+      },
+      "matched-strip": {
+        "role": "neutral",
+        "displayName": "Matched strip",
+        "tonalRamp": [
+          "oklch(15.00% 0.0267 143.60)",
+          "oklch(26.43% 0.0267 143.60)",
+          "oklch(37.86% 0.0267 143.60)",
+          "oklch(49.29% 0.0267 143.60)",
+          "oklch(60.71% 0.0267 143.60)",
+          "oklch(72.14% 0.0267 143.60)",
+          "oklch(83.57% 0.0267 143.60)",
+          "oklch(95.00% 0.0267 143.60)"
+        ]
+      },
+      "matched-text": {
+        "role": "neutral",
+        "displayName": "Matched text",
+        "tonalRamp": [
+          "oklch(15.00% 0.0578 148.24)",
+          "oklch(26.43% 0.0578 148.24)",
+          "oklch(37.86% 0.0578 148.24)",
+          "oklch(49.29% 0.0578 148.24)",
+          "oklch(60.71% 0.0578 148.24)",
+          "oklch(72.14% 0.0578 148.24)",
+          "oklch(83.57% 0.0578 148.24)",
+          "oklch(95.00% 0.0578 148.24)"
+        ]
+      },
+      "button-border": {
+        "role": "neutral",
+        "displayName": "Button border",
+        "tonalRamp": [
+          "oklch(15.00% 0.0139 159.81)",
+          "oklch(26.43% 0.0139 159.81)",
+          "oklch(37.86% 0.0139 159.81)",
+          "oklch(49.29% 0.0139 159.81)",
+          "oklch(60.71% 0.0139 159.81)",
+          "oklch(72.14% 0.0139 159.81)",
+          "oklch(83.57% 0.0139 159.81)",
+          "oklch(95.00% 0.0139 159.81)"
+        ]
+      },
+      "button-hover-border": {
+        "role": "neutral",
+        "displayName": "Button hover border",
+        "tonalRamp": [
+          "oklch(15.00% 0.0207 160.65)",
+          "oklch(26.43% 0.0207 160.65)",
+          "oklch(37.86% 0.0207 160.65)",
+          "oklch(49.29% 0.0207 160.65)",
+          "oklch(60.71% 0.0207 160.65)",
+          "oklch(72.14% 0.0207 160.65)",
+          "oklch(83.57% 0.0207 160.65)",
+          "oklch(95.00% 0.0207 160.65)"
+        ]
+      },
+      "button-pressed": {
+        "role": "neutral",
+        "displayName": "Button pressed",
+        "tonalRamp": [
+          "oklch(15.00% 0.0093 150.68)",
+          "oklch(26.43% 0.0093 150.68)",
+          "oklch(37.86% 0.0093 150.68)",
+          "oklch(49.29% 0.0093 150.68)",
+          "oklch(60.71% 0.0093 150.68)",
+          "oklch(72.14% 0.0093 150.68)",
+          "oklch(83.57% 0.0093 150.68)",
+          "oklch(95.00% 0.0093 150.68)"
+        ]
+      },
+      "button-checked": {
+        "role": "neutral",
+        "displayName": "Button checked",
+        "tonalRamp": [
+          "oklch(15.00% 0.0102 131.36)",
+          "oklch(26.43% 0.0102 131.36)",
+          "oklch(37.86% 0.0102 131.36)",
+          "oklch(49.29% 0.0102 131.36)",
+          "oklch(60.71% 0.0102 131.36)",
+          "oklch(72.14% 0.0102 131.36)",
+          "oklch(83.57% 0.0102 131.36)",
+          "oklch(95.00% 0.0102 131.36)"
+        ]
+      },
+      "button-checked-border": {
+        "role": "neutral",
+        "displayName": "Button checked border",
+        "tonalRamp": [
+          "oklch(15.00% 0.0328 146.68)",
+          "oklch(26.43% 0.0328 146.68)",
+          "oklch(37.86% 0.0328 146.68)",
+          "oklch(49.29% 0.0328 146.68)",
+          "oklch(60.71% 0.0328 146.68)",
+          "oklch(72.14% 0.0328 146.68)",
+          "oklch(83.57% 0.0328 146.68)",
+          "oklch(95.00% 0.0328 146.68)"
+        ]
+      },
+      "focus": {
+        "role": "neutral",
+        "displayName": "Focus",
+        "tonalRamp": [
+          "oklch(15.00% 0.0560 249.98)",
+          "oklch(26.43% 0.0560 249.98)",
+          "oklch(37.86% 0.0560 249.98)",
+          "oklch(49.29% 0.0560 249.98)",
+          "oklch(60.71% 0.0560 249.98)",
+          "oklch(72.14% 0.0560 249.98)",
+          "oklch(83.57% 0.0560 249.98)",
+          "oklch(95.00% 0.0560 249.98)"
+        ]
+      },
+      "disabled-text": {
+        "role": "neutral",
+        "displayName": "Disabled text",
+        "tonalRamp": [
+          "oklch(15.00% 0.0161 155.30)",
+          "oklch(26.43% 0.0161 155.30)",
+          "oklch(37.86% 0.0161 155.30)",
+          "oklch(49.29% 0.0161 155.30)",
+          "oklch(60.71% 0.0161 155.30)",
+          "oklch(72.14% 0.0161 155.30)",
+          "oklch(83.57% 0.0161 155.30)",
+          "oklch(95.00% 0.0161 155.30)"
+        ]
+      },
+      "disabled-action-text": {
+        "role": "neutral",
+        "displayName": "Disabled action text",
+        "tonalRamp": [
+          "oklch(15.00% 0.0155 152.33)",
+          "oklch(26.43% 0.0155 152.33)",
+          "oklch(37.86% 0.0155 152.33)",
+          "oklch(49.29% 0.0155 152.33)",
+          "oklch(60.71% 0.0155 152.33)",
+          "oklch(72.14% 0.0155 152.33)",
+          "oklch(83.57% 0.0155 152.33)",
+          "oklch(95.00% 0.0155 152.33)"
+        ]
+      },
+      "disabled-fill": {
+        "role": "neutral",
+        "displayName": "Disabled fill",
+        "tonalRamp": [
+          "oklch(15.00% 0.0093 150.68)",
+          "oklch(26.43% 0.0093 150.68)",
+          "oklch(37.86% 0.0093 150.68)",
+          "oklch(49.29% 0.0093 150.68)",
+          "oklch(60.71% 0.0093 150.68)",
+          "oklch(72.14% 0.0093 150.68)",
+          "oklch(83.57% 0.0093 150.68)",
+          "oklch(95.00% 0.0093 150.68)"
+        ]
+      },
+      "disabled-border": {
+        "role": "neutral",
+        "displayName": "Disabled border",
+        "tonalRamp": [
+          "oklch(15.00% 0.0147 155.52)",
+          "oklch(26.43% 0.0147 155.52)",
+          "oklch(37.86% 0.0147 155.52)",
+          "oklch(49.29% 0.0147 155.52)",
+          "oklch(60.71% 0.0147 155.52)",
+          "oklch(72.14% 0.0147 155.52)",
+          "oklch(83.57% 0.0147 155.52)",
+          "oklch(95.00% 0.0147 155.52)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "title": {
+        "displayName": "Window title",
+        "purpose": "Native Qt GeneralFont; system-ui in previews is only an approximation."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "match-reveal",
+        "value": "180ms linear; opacity 0.65 to 1",
+        "purpose": "QPropertyAnimation on a newly active reaction; neutral state immediately returns to opacity 1."
+      }
+    ],
+    "breakpoints": [],
+    "nativeLayout": {
+      "defaultWindow": "1200x800",
+      "minimumWindow": "900x650",
+      "cameraSidebarStretch": "7:3",
+      "imageFit": "Qt.KeepAspectRatio"
+    },
+    "previewNotice": "HTML/CSS snippets are static documentation equivalents, not the application runtime. Native source is gui.py; generated tonal ramps are preview metadata, not additional QSS colors. Native verification: .impeccable/build/native-verification.json."
+  },
+  "components": [
+    {
+      "name": "Camera action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Static documentation equivalent of the native camera button, including its control states.",
+      "html": "<button class=\"ds-button ds-camera\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"2\" y=\"5\" width=\"14\" height=\"14\" rx=\"2\"/><path d=\"M16 9 22 6V18L16 15\"/></svg>Start camera</button>",
+      "css": ".ds-button {font-family:system-ui,sans-serif;font-size:16px;font-weight:500;padding:12px 20px;min-height:52px;border:1px solid #AEB8B2;border-radius:9px;background:#FAFBF9;color:#252B2C;display:inline-flex;align-items:center;gap:8px;} .ds-button:hover {background:#FFFFFF;border-color:#68766E;} .ds-button:active {background:#D7DDD8;} .ds-button:focus-visible {outline:none;border:2px solid #425D79;padding:11px 19px;} .ds-button:disabled {color:#6B756E;background:#D6DCD7;border-color:#B8C2BB;} .ds-camera {min-width:190px;background:#C75517;color:#FFFFFF;border-color:#C75517;} .ds-camera:hover {background:#B84C12;border-color:#B84C12;} .ds-camera:active {background:#9C3F0D;} .ds-camera:focus-visible {border-color:#252B2C;} .ds-camera:disabled {color:#606962;background:#D6DCD7;border-color:#B8C2BB;}"
+    },
+    {
+      "name": "Overlay toggle",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Static checked-state equivalent. Actual toggling is implemented by QPushButton.",
+      "html": "<button class=\"ds-button ds-overlay\" aria-pressed=\"true\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M2 12Q12 0 22 12Q12 24 2 12Z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg>Overlay on</button>",
+      "css": ".ds-button {font-family:system-ui,sans-serif;font-size:16px;font-weight:500;padding:12px 20px;min-height:52px;border:1px solid #AEB8B2;border-radius:9px;background:#FAFBF9;color:#252B2C;display:inline-flex;align-items:center;gap:8px;} .ds-button:hover {background:#FFFFFF;border-color:#68766E;} .ds-button:active {background:#D7DDD8;} .ds-button:focus-visible {outline:none;border:2px solid #425D79;padding:11px 19px;} .ds-button:disabled {color:#6B756E;background:#D6DCD7;border-color:#B8C2BB;} .ds-overlay[aria-pressed=\"true\"] {background:#F1F5EE;border-color:#788A79;} .ds-overlay:focus-visible {border-color:#425D79;}"
+    },
+    {
+      "name": "Pose instruction",
+      "kind": "card",
+      "refersTo": "pose-row",
+      "description": "Noninteractive gesture row; matched state uses the native green fill and border.",
+      "html": "<div class=\"ds-pose\"><svg width=\"44\" height=\"44\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#252B2C\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><ellipse cx=\"8\" cy=\"11.5\" rx=\"7\" ry=\"8.5\"/><path d=\"M5 9h.01M11 9h.01M4 13Q8 18 12 13\"/><path stroke=\"#C75517\" stroke-width=\"1.6\" d=\"M18 22 16 18V13Q17 11 18 13V5Q18 2 20 3V14Q22 13 22 16L21 21\"/></svg><div><div class=\"ds-pose-title\">Smile + finger up</div><div class=\"ds-pose-copy\">Raise your index finger and smile.</div></div></div>",
+      "css": ".ds-pose {font-family:system-ui,sans-serif;display:flex;align-items:center;gap:16px;background:#FAFBF9;color:#252B2C;border:1px solid #D4D9D5;border-radius:10px;padding:16px 18px;min-height:78px;} .ds-pose svg {flex-shrink:0;} .ds-pose-title {font-size:18px;font-weight:600;margin-bottom:6px;} .ds-pose-copy {font-size:14px;color:#505958;} .ds-pose[data-matched=\"true\"] {background:#E3EDE1;border-color:#78976F;}"
+    },
+    {
+      "name": "Match strip",
+      "kind": "custom",
+      "refersTo": "match-strip",
+      "description": "Static matched label. Native opacity reveal runs for 180ms on a new active reaction.",
+      "html": "<div class=\"ds-match\" data-matched=\"true\">Matched \u00b7 Smile + finger up</div>",
+      "css": ".ds-match {font-family:system-ui,sans-serif;font-size:16px;font-weight:600;text-align:center;border-radius:8px;padding:8px;min-height:28px;background:#DCE1DD;color:#4D5951;} .ds-match[data-matched=\"true\"] {background:#D9E8D8;color:#29482E;}"
+    },
+    {
+      "name": "Camera placeholder",
+      "kind": "custom",
+      "refersTo": "camera-view",
+      "description": "Static empty-view equivalent. Native QPainter centers aspect-ratio-preserving QImages.",
+      "html": "<div class=\"ds-view\">Your camera, your pose.<br/><br/>Start the camera to try either gesture.</div>",
+      "css": ".ds-view {font-family:system-ui,sans-serif;font-size:17px;background:#252B2C;color:#DCE2DF;border-radius:10px;padding:24px;min-height:160px;display:flex;align-items:center;justify-content:center;text-align:center;white-space:normal;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Camera workspace",
+    "overview": "A compact camera workspace puts live video, the reaction image, and gesture instructions in one native desktop window. Matte silver, off-white panels, graphite video framing, and an orange camera action give the controls a quiet, practical hierarchy.",
+    "keyCharacteristics": [
+      "Native system typography and visible keyboard focus.",
+      "Flat surfaces with fine borders and gently rounded corners.",
+      "Original reaction images and aspect-ratio-preserving live video.",
+      "Explicit camera states and restrained match feedback."
+    ],
+    "rules": [
+      {
+        "name": "The State Has Words Rule",
+        "body": "Pair color changes with readable camera or match labels.",
+        "section": "colors"
+      },
+      {
+        "name": "The Whole Image Rule",
+        "body": "Fit camera and reaction images with `KeepAspectRatio`, centered with letterboxing as needed. Never stretch or crop the original reaction to fill its view.",
+        "section": "layout"
+      }
+    ],
+    "dos": [
+      "**Do** keep camera and reaction visible together.",
+      "**Do** preserve original image proportions and native keyboard focus.",
+      "**Do** pair camera and match colors with readable state labels."
+    ],
+    "donts": [
+      "**Don't** obscure the pose with controls or decorative overlays.",
+      "**Don't** substitute browser typography or web layout gates for native Qt verification."
+    ]
+  }
+}

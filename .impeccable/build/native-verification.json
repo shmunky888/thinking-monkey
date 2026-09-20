@@ -1,0 +1,68 @@
+{
+  "workflow": "native-desktop",
+  "platform": "Python / PySide6",
+  "artifact": [
+    "main.py",
+    "gui.py"
+  ],
+  "approved_comp": ".impeccable/mocks/decision/camera.png",
+  "direction_seed": "30bf17d5",
+  "replaces": "web-phase-state.not-applicable.json",
+  "adaptation": "HTML/CSS phase gates do not apply to Qt. No web-gate pass is claimed. Live camera is runtime content; original reference images replace illustrative comp imagery. Native system font and OS window controls are intentional.",
+  "layout": {
+    "normal": [
+      1200,
+      800
+    ],
+    "minimum": [
+      900,
+      650
+    ],
+    "camera_sidebar_stretch": [
+      7,
+      3
+    ],
+    "aspect_ratio": "preserved"
+  },
+  "captures": [
+    ".impeccable/review/desktop-off.png",
+    ".impeccable/review/compact-off.png",
+    ".impeccable/review/desktop-matched.png",
+    ".impeccable/review/compact-matched.png",
+    ".impeccable/review/compact-error.png"
+  ],
+  "capture_provenance": "Matched screenshots use a clearly labeled illustrative webcam crop from the approved comp only as QA input. No comp crop is loaded or referenced by shipping code.",
+  "tests": {
+    "command": "QT_QPA_PLATFORM=offscreen ./venv/bin/python -m unittest test_gui",
+    "passed": 8,
+    "coverage": [
+      "start/pause/restart/close",
+      "keyboard O and Escape",
+      "camera/model failure cleanup",
+      "error and retry control",
+      "one-slot frame mailbox",
+      "gesture geometry",
+      "match priority and 1.5s hold",
+      "image fallback",
+      "normal and compact layout"
+    ]
+  },
+  "native_launch": {
+    "command": "./run.sh",
+    "result": "Finished native macOS window opened with camera off. Accessibility inspection verified Pose Matcher title, both gesture instructions, Start camera, Overlay on, FPS, and Quit controls. An earlier launch initialized camera/model resources and exited normally."
+  },
+  "review": {
+    "disposition": "ship",
+    "scope": "Final polish pass: overlay-disabled-when-idle, pulsing status dot, eye icon toggle, improved status messages, window icon, and FPS tooltip. All 8 tests passed.",
+    "fixes": {
+      "raised_finger_gesture_icon": "resolved",
+      "native_verification_record": "resolved",
+      "overlay_disabled_when_idle": "resolved",
+      "pulsing_status_dot": "resolved",
+      "eye_icon_toggle": "resolved",
+      "status_text_refinement": "resolved"
+    },
+    "python_review": "No material lifecycle regressions found; all 8 tests passed. Overlay button enable/disable lifecycle verified."
+  },
+  "documentation": "complete"
+}

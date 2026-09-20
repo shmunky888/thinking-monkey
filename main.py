@@ -9,10 +9,19 @@ if __name__ == "__main__" and os.path.exists(venv_python) and os.path.abspath(sy
 
 import cv2
 from contextlib import ExitStack
+from dataclasses import dataclass
+from threading import Event
 from typing import Tuple, Any
 import mediapipe as mp
 import numpy as np
 import time
+
+UI_FONT = cv2.FONT_HERSHEY_DUPLEX
+# OpenCV colors are BGR. Dark edging keeps the overlay legible over video.
+TRACK_LINE = (225, 237, 242)
+TRACK_DETAIL = (164, 177, 182)
+TRACK_EDGE = (24, 22, 20)
+TRACK_ACCENT = (90, 154, 250)
 
 # MediaPipe
 mp_pose = mp.solutions.pose
@@ -70,46 +79,55 @@ MOUTH_OUTER = [
     (0,37),(37,39),(39,40),(40,185),(185,61),
 ]
 
-def draw_face(canvas: Any, face_lm: Any, w: int, h: int, color: Tuple[int, int, int] = (0, 0, 255), thickness: int = 1) -> None:
+def draw_connections(canvas: Any, pts: dict, connections: list,
+                     color: Tuple[int, int, int], thickness: int = 1) -> None:
+    """Draw the dark casing first so connected strokes stay uninterrupted."""
+    for stroke, width in ((TRACK_EDGE, thickness + 2), (color, thickness)):
+        for start, end in connections:
+            if start in pts and end in pts:
+                cv2.line(canvas, pts[start], pts[end], stroke, width, cv2.LINE_AA)
+
+
+def draw_joint(canvas: Any, point: Tuple[int, int],
+               color: Tuple[int, int, int] = TRACK_LINE, radius: int = 3) -> None:
+    """A small open ring separates the joint from its connecting bones."""
+    cv2.circle(canvas, point, radius + 1, TRACK_EDGE, -1, cv2.LINE_AA)
+    cv2.circle(canvas, point, radius, color, 1, cv2.LINE_AA)
+
+
+def draw_face(canvas: Any, face_lm: Any, w: int, h: int, color: Tuple[int, int, int] = TRACK_DETAIL, thickness: int = 1) -> None:
     pts = {}
     for lm in face_lm.landmark:
         pts[len(pts)] = (int(lm.x * w), int(lm.y * h))
 
-    def ln(conns, col=color, th=thickness):
-        for s, e in conns:
-            if s in pts and e in pts:
-                cv2.line(canvas, pts[s], pts[e], col, th, cv2.LINE_AA)
-
-    ln(FACE_OUTLINE); ln(EYEBROW_LEFT, color, thickness)
-    ln(EYEBROW_RIGHT, color, thickness); ln(EYE_LEFT, color, thickness)
-    ln(EYE_RIGHT, color, thickness); ln(MOUTH_OUTER, color, thickness)
-    for i in [0,33,263,61,291,10,152]:
-        if i in pts:
-            cv2.circle(canvas, pts[i], 2, color, -1, cv2.LINE_AA)
+    connections = FACE_OUTLINE + EYEBROW_LEFT + EYEBROW_RIGHT + EYE_LEFT + EYE_RIGHT + MOUTH_OUTER
+    draw_connections(canvas, pts, connections, color, thickness)
 
 
-def draw_arms(canvas: Any, landmarks: Any, w: int, h: int, color: Tuple[int, int, int] = (0, 0, 255), thickness: int = 1) -> None:
+def draw_arms(canvas: Any, landmarks: Any, w: int, h: int, color: Tuple[int, int, int] = TRACK_LINE, thickness: int = 1) -> None:
     pts = {}
     for idx in ARM_LANDMARKS:
         lm = landmarks[idx]
         if lm.visibility > 0.5:
             pts[idx] = (int(lm.x * w), int(lm.y * h))
-    for s, e in ARM_CONNECTIONS:
-        if s in pts and e in pts:
-            cv2.line(canvas, pts[s], pts[e], color, thickness, cv2.LINE_AA)
+    draw_connections(canvas, pts, ARM_CONNECTIONS, color, thickness)
     for pt in pts.values():
-        cv2.circle(canvas, pt, 2, color, -1, cv2.LINE_AA)
+        draw_joint(canvas, pt, color, radius=4)
 
 
-def draw_hand(canvas: Any, hand_lm: Any, w: int, h: int, color: Tuple[int, int, int] = (0, 0, 255), thickness: int = 1) -> None:
+def draw_hand(canvas: Any, hand_lm: Any, w: int, h: int, color: Tuple[int, int, int] = TRACK_LINE, thickness: int = 1) -> None:
     pts = {}
     for lm in hand_lm.landmark:
         pts[len(pts)] = (int(lm.x * w), int(lm.y * h))
-    for s, e in HAND_CONNECTIONS:
-        if s in pts and e in pts:
-            cv2.line(canvas, pts[s], pts[e], color, thickness, cv2.LINE_AA)
-    for i, pt in pts.items():
-        cv2.circle(canvas, pt, 2, color, -1, cv2.LINE_AA)
+    draw_connections(canvas, pts, HAND_CONNECTIONS, color, thickness)
+    # The index finger drives both gestures; give it a single consistent accent.
+    for start, end in ((5, 6), (6, 7), (7, 8)):
+        if start in pts and end in pts:
+            cv2.line(canvas, pts[start], pts[end], TRACK_ACCENT, thickness, cv2.LINE_AA)
+    for idx in [0, *FINGER_TIPS]:
+        if idx in pts:
+            draw_joint(canvas, pts[idx], TRACK_ACCENT if idx == 8 else color,
+                       radius=4 if idx == 0 else 2)
 
 
 def check_index_finger_up(hand_landmarks: Any) -> bool:
@@ -191,16 +209,15 @@ def make_reference_image() -> Any:
         ("l_hip","l_knee"),("l_knee","l_ankle"),
         ("r_hip","r_knee"),("r_knee","r_ankle"),
     ]
-    for a, b in body_conns:
-        cv2.line(canvas, px(REF_BODY[a]), px(REF_BODY[b]), (0,255,0), 4, cv2.LINE_AA)
-
-    for pt in REF_BODY.values():
-        cv2.circle(canvas, px(pt), 6, (0,0,255), -1, cv2.LINE_AA)
+    body_pts = {name: px(point) for name, point in REF_BODY.items()}
+    draw_connections(canvas, body_pts, body_conns, TRACK_LINE)
+    for pt in body_pts.values():
+        draw_joint(canvas, pt, radius=4)
 
     # Head
     nose_px = px(REF_BODY["nose"])
     sw = abs(REF_BODY["l_shoulder"][0] - REF_BODY["r_shoulder"][0]) * W
-    cv2.circle(canvas, nose_px, int(sw * 0.28), (0,255,0), 3, cv2.LINE_AA)
+    cv2.circle(canvas, nose_px, int(sw * 0.28), TRACK_LINE, 1, cv2.LINE_AA)
 
     # Hands
     def make_hand(cx, cy, sx, sy):
@@ -213,177 +230,117 @@ def make_reference_image() -> Any:
         return pts
 
     for hand_pts in [make_hand(0.08,0.28,0.08,0.12), make_hand(0.92,0.28,-0.08,0.12)]:
-        for s, e in HAND_CONNECTIONS:
-            cv2.line(canvas, px(hand_pts[s]), px(hand_pts[e]), (255,100,0), 2, cv2.LINE_AA)
-        for i, pt in enumerate(hand_pts):
-            r = 5 if i in FINGER_TIPS else (4 if i == 0 else 3)
-            c = (0,255,255) if i in FINGER_TIPS else ((255,255,255) if i == 0 else (200,200,200))
-            cv2.circle(canvas, px(pt), r, c, -1, cv2.LINE_AA)
+        pts = {idx: px(point) for idx, point in enumerate(hand_pts)}
+        draw_connections(canvas, pts, HAND_CONNECTIONS, TRACK_LINE)
+        for idx in [0, *FINGER_TIPS]:
+            draw_joint(canvas, pts[idx], TRACK_ACCENT if idx == 8 else TRACK_LINE,
+                       radius=3 if idx == 0 else 2)
 
     cv2.putText(canvas, "MATCH THIS POSE", (180, 455),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.85, (255,255,255), 2, cv2.LINE_AA)
+                UI_FONT, 0.85, (255,255,255), 1, cv2.LINE_AA)
 
     return canvas
 
 
+@dataclass(frozen=True)
+class TrackingState:
+    has_arms: bool
+    has_face: bool
+    hand_count: int
+    smile_score: int
+    index_up: bool
+    finger_near_mouth: bool
+    active_ref: int | None
+    matched: bool
+    fps: float
+
+
 class PoseMatcher:
     def __init__(self):
-        self.WIN = "Pose Matcher"
-        self.fps = 0.0
-        self.last_time = time.monotonic()
-        self.matched = False
-        self.match_hold_time = 0
-        self.ref_window_open = False
-
-        # Reference images
         self.ref_img1 = cv2.imread(os.path.join(script_dir, "f139fdf3202282f05db2fc08ef97ea0b.jpg"))
         if self.ref_img1 is None:
             self.ref_img1 = make_reference_image()
-
         self.ref_img2 = cv2.imread(os.path.join(script_dir, "think_monkey.png"))
         if self.ref_img2 is None:
             self.ref_img2 = make_reference_image()
 
-        self.active_ref = None  # Tracks which reference image matched (1 or 2)
-
-    def run(self) -> None:
-        """Acquire resources and release them even if initialization fails."""
-        print("=" * 55)
-        print("  Pose Matcher — Real-Time")
-        print("=" * 55)
-        print("  Match the reference pose shown on screen.")
-        print("  When your pose matches, the picture appears!")
-        print("  Q / ESC to exit.")
-        print("=" * 55)
-
+    def frames(self, stop: Event, overlay: Event):
+        """Yield processed frames; closing the iterator releases camera and models."""
         with ExitStack() as resources:
-            resources.callback(cv2.destroyAllWindows)
-            self.cap = cv2.VideoCapture(0)
-            resources.callback(self.cap.release)
-            self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-            self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-            if not self.cap.isOpened():
-                raise RuntimeError("Cannot open camera.")
-            time.sleep(1)
-
-            self.pose = resources.enter_context(mp_pose.Pose(
+            cap = cv2.VideoCapture(0)
+            resources.callback(cap.release)
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+            if not cap.isOpened():
+                raise RuntimeError("Cannot open camera. Check camera access and close other camera apps.")
+            if stop.is_set():
+                return
+            pose = resources.enter_context(mp_pose.Pose(
                 static_image_mode=False, model_complexity=1,
                 min_detection_confidence=0.5, min_tracking_confidence=0.5,
             ))
-            self.face_mesh = resources.enter_context(mp_face_mesh.FaceMesh(
+            face_mesh = resources.enter_context(mp_face_mesh.FaceMesh(
                 static_image_mode=False, max_num_faces=1, refine_landmarks=True,
                 min_detection_confidence=0.5, min_tracking_confidence=0.5,
             ))
-            self.hands = resources.enter_context(mp_hands.Hands(
+            hands = resources.enter_context(mp_hands.Hands(
                 static_image_mode=False, max_num_hands=2,
                 min_detection_confidence=0.6, min_tracking_confidence=0.5,
             ))
-            cv2.namedWindow(self.WIN)
-            self.last_time = time.monotonic()
-
-            while True:
-                ret, frame = self.cap.read()
-                if not ret:
-                    raise RuntimeError("Cannot read camera frame.")
-
+            last_time = time.monotonic()
+            fps = 0.0
+            active_ref = None
+            hold_until = 0.0
+            while not stop.is_set():
+                ok, frame = cap.read()
+                if not ok:
+                    raise RuntimeError("Cannot read camera. Reconnect it, then try again.")
                 frame = cv2.flip(frame, 1)
-                h, w, _ = frame.shape
+                h, w = frame.shape[:2]
                 rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
-                pose_res = self.pose.process(rgb)
-                face_res = self.face_mesh.process(rgb)
-                hands_res = self.hands.process(rgb)
-
-                has_arms = False
-                has_face = False
-                hand_count = 0
-                has_index_up = False
-                smile_score = 0
-                face = None
-
-                if pose_res.pose_landmarks:
-                    lm = pose_res.pose_landmarks.landmark
-                    has_arms = True
-                    draw_arms(frame, lm, w, h)
-
-                if face_res.multi_face_landmarks:
-                    face = face_res.multi_face_landmarks[0]
-                    has_face = True
-                    draw_face(frame, face, w, h)
-                    smile_score = check_smile(face)
-
+                pose_res = pose.process(rgb)
+                face_res = face_mesh.process(rgb)
+                hands_res = hands.process(rgb)
+                draw_overlay = overlay.is_set()
+                has_arms = bool(pose_res.pose_landmarks)
+                face = face_res.multi_face_landmarks[0] if face_res.multi_face_landmarks else None
+                hand_landmarks = hands_res.multi_hand_landmarks or []
+                smile_score = check_smile(face) if face else 0
+                index_up = False
                 finger_near_mouth = False
-                if hands_res.multi_hand_landmarks:
-                    hand_count = len(hands_res.multi_hand_landmarks)
-                    for hand_lm in hands_res.multi_hand_landmarks:
-                        draw_hand(frame, hand_lm, w, h)
-                        if check_index_finger_up(hand_lm):
-                            has_index_up = True
-                            if check_finger_near_mouth(hand_lm, face):
-                                finger_near_mouth = True
-
-                # Pose 1: Smiling + Index finger pointing up
-                matched_1 = has_index_up and (smile_score >= 75)
-                # Pose 2: Index finger raised and near/touching the mouth (thinking/biting pose)
-                matched_2 = has_index_up and finger_near_mouth
-
-                if matched_1:
-                    self.matched = True
-                    self.active_ref = 1
-                elif matched_2:
-                    self.matched = True
-                    self.active_ref = 2
-                else:
-                    self.matched = False
-
-                if self.matched:
-                    self.match_hold_time = time.monotonic() + 1.5  # hold for 1.5s
-
-                # FPS
+                if has_arms and draw_overlay:
+                    draw_arms(frame, pose_res.pose_landmarks.landmark, w, h)
+                if face and draw_overlay:
+                    draw_face(frame, face, w, h)
+                for hand in hand_landmarks:
+                    if draw_overlay:
+                        draw_hand(frame, hand, w, h)
+                    if check_index_finger_up(hand):
+                        index_up = True
+                        if check_finger_near_mouth(hand, face):
+                            finger_near_mouth = True
                 now = time.monotonic()
-                self.fps = 0.9 * self.fps + 0.1 / max(now - self.last_time, 0.001)
-                self.last_time = now
-
-                # Status
-                parts = []
-                if has_arms: parts.append("Arms")
-                if has_face: parts.append("Face")
-                if hand_count: parts.append(f"Hands({hand_count})")
-                status = f"Tracking: {', '.join(parts)}" if parts else "No detection"
-                cv2.putText(frame, status, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                            (0,255,0) if parts else (0,0,255), 2, cv2.LINE_AA)
-
-                cv2.putText(frame, f"FPS:{self.fps:.0f}", (560, 30),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (150,150,150), 1, cv2.LINE_AA)
-
-                # If matched, show reference image in a separate window, 100% clearly
-                if self.matched or now < self.match_hold_time:
-                    if not self.ref_window_open:
-                        cv2.namedWindow("Matched Image", cv2.WINDOW_AUTOSIZE)
-                        self.ref_window_open = True
-                    
-                    # Select the matched reference image
-                    ref_to_show = self.ref_img1 if self.active_ref == 1 else self.ref_img2
-                    cv2.imshow("Matched Image", ref_to_show)
-                    
-                    cv2.putText(frame, "MATCH!", (250, 80),
-                                cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0,255,0), 3, cv2.LINE_AA)
-                else:
-                    if self.ref_window_open:
-                        try:
-                            cv2.destroyWindow("Matched Image")
-                        except cv2.error:
-                            pass
-                        self.ref_window_open = False
-                        self.active_ref = None
-
-                cv2.imshow(self.WIN, frame)
-
-                key = cv2.waitKey(1) & 0xFF
-                if key == ord("q") or key == 27:
+                matched = False
+                if index_up and smile_score >= 75:
+                    active_ref, matched = 1, True
+                elif index_up and finger_near_mouth:
+                    active_ref, matched = 2, True
+                if matched:
+                    hold_until = now + 1.5
+                elif now >= hold_until:
+                    active_ref = None
+                fps = 0.9 * fps + 0.1 / max(now - last_time, 0.001)
+                last_time = now
+                if stop.is_set():
                     break
-                # Small sleep to reduce CPU load
-                time.sleep(0.01)
+                yield frame, TrackingState(has_arms, face is not None, len(hand_landmarks),
+                                           smile_score, index_up, finger_near_mouth,
+                                           active_ref, matched, fps)
+                stop.wait(0.01)
+
+    def run(self) -> None:
+        from gui import run_gui
+        run_gui(self)
 
 
 if __name__ == "__main__":
