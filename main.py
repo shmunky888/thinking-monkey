@@ -4,11 +4,12 @@ import sys
 # Ensure we run using the local virtual environment Python if available
 script_dir = os.path.dirname(os.path.abspath(__file__))
 venv_python = os.path.join(script_dir, 'venv', 'bin', 'python')
-if os.path.exists(venv_python) and os.path.abspath(sys.executable) != os.path.abspath(venv_python):
+if __name__ == "__main__" and os.path.exists(venv_python) and os.path.abspath(sys.executable) != os.path.abspath(venv_python):
     os.execv(venv_python, [venv_python] + sys.argv)
 
 import cv2
-from typing import Tuple, List, Dict, Any
+from contextlib import ExitStack
+from typing import Tuple, Any
 import mediapipe as mp
 import numpy as np
 import time
@@ -35,14 +36,6 @@ REF_BODY = {
     "r_knee":     (0.60, 0.75),
     "l_ankle":    (0.38, 0.92),
     "r_ankle":    (0.62, 0.92),
-}
-
-# Pose landmark indices -> our body key names
-POSE_MAP = {
-    0: "nose", 11: "l_shoulder", 12: "r_shoulder",
-    13: "l_elbow", 14: "r_elbow", 15: "l_wrist", 16: "r_wrist",
-    23: "l_hip", 24: "r_hip", 25: "l_knee", 26: "r_knee",
-    27: "l_ankle", 28: "r_ankle",
 }
 
 # Arm connections
@@ -76,23 +69,6 @@ MOUTH_OUTER = [
     (321,375),(375,291),(291,409),(409,270),(270,269),(269,267),(267,0),
     (0,37),(37,39),(39,40),(40,185),(185,61),
 ]
-
-# GUI buttons
-BTN_QUIT = (500, 420, 120, 45)
-
-
-
-
-def draw_button(img: Any, rect: Tuple[int, int, int, int], text: str, color: Tuple[int, int, int], text_color: Tuple[int, int, int] = (255, 255, 255)) -> None:
-    x, y, w, h = rect
-    overlay = img.copy()
-    cv2.rectangle(overlay, (x, y), (x+w, y+h), color, -1)
-    cv2.addWeighted(overlay, 0.7, img, 0.3, 0, img)
-    cv2.rectangle(img, (x, y), (x+w, y+h), (200,200,200), 1, cv2.LINE_AA)
-    ts = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)[0]
-    cv2.putText(img, text, (x + (w-ts[0])//2, y + (h+ts[1])//2),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.6, text_color, 2, cv2.LINE_AA)
-
 
 def draw_face(canvas: Any, face_lm: Any, w: int, h: int, color: Tuple[int, int, int] = (0, 0, 255), thickness: int = 1) -> None:
     pts = {}
@@ -136,57 +112,6 @@ def draw_hand(canvas: Any, hand_lm: Any, w: int, h: int, color: Tuple[int, int, 
         cv2.circle(canvas, pt, 2, color, -1, cv2.LINE_AA)
 
 
-def normalize_landmarks(landmarks: Any) -> Dict[str, Tuple[float, float]]:
-    """Normalize pose landmarks relative to torso center and size."""
-    # Validate required landmark indices exist
-    required_indices = [11, 12, 23, 24]
-    for idx in required_indices:
-        if idx >= len(landmarks):
-            return {}
-    # Use shoulder midpoint and torso length as reference
-    l_sh = landmarks[11]
-    r_sh = landmarks[12]
-    l_hip = landmarks[23]
-    r_hip = landmarks[24]
-
-    cx = (l_sh.x + r_sh.x + l_hip.x + r_hip.x) / 4
-    cy = (l_sh.y + r_sh.y + l_hip.y + r_hip.y) / 4
-
-    torso_w = abs(l_sh.x - r_sh.x) + 0.001
-    torso_h = abs((l_sh.y + r_sh.y)/2 - (l_hip.y + r_hip.y)/2) + 0.001
-    scale = max(torso_w, torso_h)
-
-    result = {}
-    for idx, name in POSE_MAP.items():
-        lm = landmarks[idx]
-        if lm.visibility > 0.4:
-            result[name] = ((lm.x - cx) / scale, (lm.y - cy) / scale)
-    return result
-
-
-def compute_match_score(norm_live: Dict[str, Tuple[float, float]]) -> int:
-    """Compare normalized live pose to reference body. Returns 0-100."""
-    if not norm_live:
-        return 0
-
-    total_dist = 0
-    count = 0
-    for name, ref_pt in REF_BODY.items():
-        if name in norm_live:
-            live_pt = norm_live[name]
-            dist = ((live_pt[0] - ref_pt[0])**2 + (live_pt[1] - ref_pt[1])**2) ** 0.5
-            total_dist += dist
-            count += 1
-
-    if count < 4:
-        return 0
-
-    avg_dist = total_dist / count
-    # Convert to score: dist=0 -> 100, dist=0.5 -> ~50, dist>1 -> low
-    score = max(0, 100 - (avg_dist * 100))
-    return int(score)
-
-
 def check_index_finger_up(hand_landmarks: Any) -> bool:
     """
     Check if the index finger is pointed up, and other fingers (middle, ring, pinky) are folded.
@@ -227,7 +152,7 @@ def check_smile(face_landmarks: Any) -> int:
     return score
 
 
-def check_finger_near_mouth(hand_landmarks: Any, face_landmarks: Any) -> bool:
+def check_finger_near_mouth(hand_landmarks: Any, face_landmarks: Any, threshold: float = 0.12) -> bool:
     """
     Check if the index finger tip is near the mouth.
     """
@@ -240,14 +165,13 @@ def check_finger_near_mouth(hand_landmarks: Any, face_landmarks: Any) -> bool:
     # Mouth center
     mouth_cx = (f_lm[61].x + f_lm[291].x) / 2
     mouth_cy = (f_lm[61].y + f_lm[291].y) / 2
-    mouth_cz = (f_lm[61].z + f_lm[291].z) / 2
     
     index_tip = h_lm[8]
     
-    # Normalized distance in 3D
-    dist = ((index_tip.x - mouth_cx)**2 + (index_tip.y - mouth_cy)**2 + (index_tip.z - mouth_cz)**2) ** 0.5
-    # Relaxed from 0.08 to 0.12 to make it significantly easier to match near the mouth/chin
-    return dist < 0.12
+    # Hand z is relative to the wrist; face z is relative to the head.
+    # ponytail: 2D proximity cannot prove contact; use shared depth if needed.
+    dist = ((index_tip.x - mouth_cx)**2 + (index_tip.y - mouth_cy)**2) ** 0.5
+    return dist < threshold
 
 
 def make_reference_image() -> Any:
@@ -305,51 +229,25 @@ def make_reference_image() -> Any:
 class PoseMatcher:
     def __init__(self):
         self.WIN = "Pose Matcher"
-        self.running = True
         self.fps = 0.0
-        self.last_time = time.time()
-        self.match_score = 0
+        self.last_time = time.monotonic()
         self.matched = False
         self.match_hold_time = 0
         self.ref_window_open = False
 
         # Reference images
-        self.ref_img1 = cv2.imread("f139fdf3202282f05db2fc08ef97ea0b.jpg")
+        self.ref_img1 = cv2.imread(os.path.join(script_dir, "f139fdf3202282f05db2fc08ef97ea0b.jpg"))
         if self.ref_img1 is None:
             self.ref_img1 = make_reference_image()
 
-        self.ref_img2 = cv2.imread("think_monkey.png")
+        self.ref_img2 = cv2.imread(os.path.join(script_dir, "think_monkey.png"))
         if self.ref_img2 is None:
-            self.ref_img2 = self.ref_img1
+            self.ref_img2 = make_reference_image()
 
         self.active_ref = None  # Tracks which reference image matched (1 or 2)
 
-        # Camera
-        self.cap = cv2.VideoCapture(0)
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-        time.sleep(1)
-
-        if not self.cap.isOpened():
-            sys.stderr.write("Error: Cannot open camera.\n")
-            sys.exit(1)
-
-        # MediaPipe
-        self.pose = mp_pose.Pose(
-            static_image_mode=False, model_complexity=1,
-            min_detection_confidence=0.5, min_tracking_confidence=0.5,
-        )
-        self.face_mesh = mp_face_mesh.FaceMesh(
-            static_image_mode=False, max_num_faces=1, refine_landmarks=True,
-            min_detection_confidence=0.5, min_tracking_confidence=0.5,
-        )
-        self.hands = mp_hands.Hands(
-            static_image_mode=False, max_num_hands=2,
-            min_detection_confidence=0.6, min_tracking_confidence=0.5,
-        )
-
-        cv2.namedWindow(self.WIN)
-
+    def run(self) -> None:
+        """Acquire resources and release them even if initialization fails."""
         print("=" * 55)
         print("  Pose Matcher — Real-Time")
         print("=" * 55)
@@ -358,16 +256,35 @@ class PoseMatcher:
         print("  Q / ESC to exit.")
         print("=" * 55)
 
-        self.run()
+        with ExitStack() as resources:
+            resources.callback(cv2.destroyAllWindows)
+            self.cap = cv2.VideoCapture(0)
+            resources.callback(self.cap.release)
+            self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+            self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+            if not self.cap.isOpened():
+                raise RuntimeError("Cannot open camera.")
+            time.sleep(1)
 
-    def run(self) -> None:
-        """Main loop with resource cleanup and a small sleep to limit CPU usage."""
-        try:
-            while self.running:
+            self.pose = resources.enter_context(mp_pose.Pose(
+                static_image_mode=False, model_complexity=1,
+                min_detection_confidence=0.5, min_tracking_confidence=0.5,
+            ))
+            self.face_mesh = resources.enter_context(mp_face_mesh.FaceMesh(
+                static_image_mode=False, max_num_faces=1, refine_landmarks=True,
+                min_detection_confidence=0.5, min_tracking_confidence=0.5,
+            ))
+            self.hands = resources.enter_context(mp_hands.Hands(
+                static_image_mode=False, max_num_hands=2,
+                min_detection_confidence=0.6, min_tracking_confidence=0.5,
+            ))
+            cv2.namedWindow(self.WIN)
+            self.last_time = time.monotonic()
+
+            while True:
                 ret, frame = self.cap.read()
                 if not ret:
-                    time.sleep(0.1)
-                    continue
+                    raise RuntimeError("Cannot read camera frame.")
 
                 frame = cv2.flip(frame, 1)
                 h, w, _ = frame.shape
@@ -382,7 +299,7 @@ class PoseMatcher:
                 hand_count = 0
                 has_index_up = False
                 smile_score = 0
-                self.last_face = None  # Initialize to prevent AttributeError
+                face = None
 
                 if pose_res.pose_landmarks:
                     lm = pose_res.pose_landmarks.landmark
@@ -390,26 +307,20 @@ class PoseMatcher:
                     draw_arms(frame, lm, w, h)
 
                 if face_res.multi_face_landmarks:
-                    self.last_face = face_res.multi_face_landmarks[0]
+                    face = face_res.multi_face_landmarks[0]
                     has_face = True
-                    draw_face(frame, self.last_face, w, h)
-                    smile_score = check_smile(self.last_face)
+                    draw_face(frame, face, w, h)
+                    smile_score = check_smile(face)
 
                 finger_near_mouth = False
-                if hands_res.multi_hand_landmarks and self.last_face:
+                if hands_res.multi_hand_landmarks:
                     hand_count = len(hands_res.multi_hand_landmarks)
                     for hand_lm in hands_res.multi_hand_landmarks:
                         draw_hand(frame, hand_lm, w, h)
                         if check_index_finger_up(hand_lm):
                             has_index_up = True
-                            if has_face and check_finger_near_mouth(hand_lm, self.last_face):
+                            if check_finger_near_mouth(hand_lm, face):
                                 finger_near_mouth = True
-
-                # Compute match score based on index finger pointing up and face smiling
-                if has_index_up:
-                    self.match_score = smile_score
-                else:
-                    self.match_score = 0
 
                 # Pose 1: Smiling + Index finger pointing up
                 matched_1 = has_index_up and (smile_score >= 75)
@@ -426,10 +337,10 @@ class PoseMatcher:
                     self.matched = False
 
                 if self.matched:
-                    self.match_hold_time = time.time() + 1.5  # hold for 1.5s
+                    self.match_hold_time = time.monotonic() + 1.5  # hold for 1.5s
 
                 # FPS
-                now = time.time()
+                now = time.monotonic()
                 self.fps = 0.9 * self.fps + 0.1 / max(now - self.last_time, 0.001)
                 self.last_time = now
 
@@ -473,16 +384,7 @@ class PoseMatcher:
                     break
                 # Small sleep to reduce CPU load
                 time.sleep(0.01)
-        except Exception as e:
-            sys.stderr.write(f"Error in main loop: {e}\n")
-        finally:
-            self.cap.release()
-            self.pose.close()
-            self.face_mesh.close()
-            self.hands.close()
-            cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
-    PoseMatcher()
-
+    PoseMatcher().run()
