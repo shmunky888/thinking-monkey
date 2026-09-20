@@ -12,12 +12,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Requires a webcam connected to the machine. Press Q or ESC to quit.
 Camera or model failures exit with an error and release acquired resources.
 
-Headless regression check (no webcam or GUI required):
-
-```bash
-./venv/bin/python test_main.py
-```
-
 ## Dependencies
 
 Python 3.12 virtualenv in `venv/`. Key packages: `opencv-python`, `mediapipe`, `numpy`.

@@ -11,3 +11,6 @@ __pycache__/
 
 # Ignore OS files
 .DS_Store
+
+# Local regression check
+/test_main.py
