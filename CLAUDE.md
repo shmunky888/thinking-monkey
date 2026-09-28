@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Repository guidance. Last updated: 2026-09-20.
+Repository guidance. Last updated: 2026-09-28.
 
 ## Run and dependencies
 
@@ -27,7 +27,7 @@ Space starts/pauses/resumes capture, O toggles overlay visibility, and Q/Esc qui
 
 Original reaction sources are `f139fdf3202282f05db2fc08ef97ea0b.jpg` (smile) and `think_monkey.png` (thinking). They resolve relative to `main.py`; `make_reference_image()` provides a synthetic T-pose fallback.
 
-Follow `DESIGN.md`, the QSS in `gui.py`, and `.impeccable/surfaces/main-py.md`. The approved Camera workspace uses Qt system typography, a 7:3 camera/sidebar layout, a 1200×800 default and 900×650 minimum, explicit keyboard focus, and a 180ms match-strip opacity transition. `.impeccable/design.json` has static HTML/CSS documentation equivalents, not application components.
+Follow `DESIGN.md` and the QSS in `gui.py`. The Camera workspace uses Qt system typography, a 7:3 camera/reaction layout, a 1200×800 default and 900×650 minimum, and explicit keyboard focus. The pose instruction cards and match strip were removed at the user's request. `.impeccable/` retains earlier design references and static previews, not application components.
 
 ## Verification
 

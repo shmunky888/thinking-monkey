@@ -1,8 +1,8 @@
 # Pose Matcher
 
-A local Python desktop app that matches two webcam gestures and shows the corresponding reaction image beside your live feed. The single PySide6 window includes gesture instructions, camera state, an optional tracking overlay, and FPS.
+A local Python desktop app that matches two webcam gestures and shows the corresponding reaction image beside your live feed. The single PySide6 window includes camera state, an optional tracking overlay, and FPS.
 
-Last updated: 2026-09-20.
+Last updated: 2026-09-28.
 
 ## Setup and run
 

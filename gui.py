@@ -6,9 +6,9 @@ from typing import TYPE_CHECKING
 
 import cv2
 import numpy as np
-from PySide6.QtCore import Qt, QThread, QTimer, QSize, QRectF, QPropertyAnimation, Signal, Slot
+from PySide6.QtCore import Qt, QThread, QTimer, QSize, QRectF, Signal, Slot
 from PySide6.QtGui import QColor, QFontDatabase, QIcon, QImage, QKeySequence, QPainter, QPainterPath, QPen, QPixmap, QShortcut
-from PySide6.QtWidgets import QApplication, QFrame, QGraphicsOpacityEffect, QHBoxLayout, QLabel, QPushButton, QSizePolicy, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QApplication, QFrame, QHBoxLayout, QLabel, QPushButton, QSizePolicy, QVBoxLayout, QWidget
 
 if TYPE_CHECKING:
     from main import PoseMatcher, TrackingState
@@ -20,12 +20,6 @@ QLabel { background: transparent; }
 QLabel#title { font-size: 22px; font-weight: 600; }
 QLabel#cameraStatus { color: #515A5A; }
 QFrame#toolbar { border-top: 1px solid #CCD1CE; }
-QFrame#poseRow { background: #FAFBF9; border: 1px solid #D4D9D5; border-radius: 10px; }
-QFrame#poseRow[matched="true"] { background: #E3EDE1; border-color: #78976F; }
-QLabel#poseTitle { font-size: 18px; font-weight: 600; }
-QLabel#poseCopy { color: #505958; }
-QLabel#matchState { background: #DCE1DD; color: #4D5951; border-radius: 8px; font-size: 16px; font-weight: 600; padding: 8px; }
-QLabel#matchState[matched="true"] { background: #D9E8D8; color: #29482E; }
 QPushButton { background: #FAFBF9; border: 1px solid #AEB8B2; border-radius: 9px; padding: 12px 20px; font-size: 16px; font-weight: 500; }
 QPushButton:hover { background: #FFFFFF; border-color: #68766E; }
 QPushButton:pressed { background: #D7DDD8; }
@@ -83,12 +77,6 @@ def icon(kind: str, color: str = '#252B2C', size: int = 24) -> QIcon:
         finger.quadTo(18, 2, 20, 3); finger.lineTo(20, 14)
         finger.quadTo(22, 13, 22, 16); finger.lineTo(21, 21)
         painter.drawPath(finger)
-    elif kind == 'thinking':
-        painter.drawEllipse(QRectF(3, 2, 18, 20))
-        painter.drawPoint(8, 9); painter.drawPoint(16, 9)
-        path = QPainterPath()
-        path.moveTo(10, 21); path.lineTo(13, 15); path.quadTo(14, 13, 15, 15); path.lineTo(13, 21)
-        painter.drawPath(path)
     painter.end()
     return QIcon(pixmap)
 
@@ -216,54 +204,9 @@ class PoseWindow(QWidget):
         self.camera = ImageView('Live camera with optional pose tracking overlay')
         self.camera.show_message('Your camera, your pose.\n\nStart the camera to try either gesture.')
         content.addWidget(self.camera, 7)
-        sidebar = QVBoxLayout()
-        sidebar.setSpacing(12)
         self.reaction = ImageView('Matched reaction image', dark=False)
         self.reaction.show_message('Your reaction appears here\nwhen a pose matches.')
-        sidebar.addWidget(self.reaction, 1)
-        self.match_label = QLabel('Try either pose')
-        self.match_label.setObjectName('matchState')
-        self.match_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.match_label.setMinimumHeight(44)
-        self.match_effect = QGraphicsOpacityEffect(self.match_label)
-        self.match_effect.setOpacity(1.0)
-        self.match_label.setGraphicsEffect(self.match_effect)
-        self.match_animation = QPropertyAnimation(self.match_effect, b'opacity', self)
-        self.match_animation.setDuration(180)
-        sidebar.addWidget(self.match_label)
-        self.pose_rows = []
-        for name, title_text, copy in [
-            ('smile', 'Smile + finger up', 'Raise your index finger and smile.'),
-            ('thinking', 'Thinking pose', 'Bring your raised finger near your mouth.'),
-        ]:
-            row = QFrame()
-            row.setObjectName('poseRow')
-            row.setMinimumHeight(110)
-            row_layout = QHBoxLayout(row)
-            row_layout.setContentsMargins(18, 16, 18, 16)
-            row_layout.setSpacing(16)
-            glyph = QLabel()
-            glyph.setPixmap(icon(name, size=44).pixmap(QSize(44, 44)))
-            glyph.setFixedSize(44, 44)
-            glyph.setAccessibleName(title_text + ' gesture')
-            row_layout.addWidget(glyph)
-            text = QVBoxLayout()
-            text.setSpacing(6)
-            heading = QLabel(title_text)
-            heading.setObjectName('poseTitle')
-            heading.setWordWrap(True)
-            heading.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Maximum)
-            description = QLabel(copy)
-            description.setObjectName('poseCopy')
-            description.setWordWrap(True)
-            description.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Maximum)
-            text.setAlignment(Qt.AlignmentFlag.AlignVCenter)
-            text.addWidget(heading)
-            text.addWidget(description)
-            row_layout.addLayout(text, 1)
-            sidebar.addWidget(row)
-            self.pose_rows.append(row)
-        content.addLayout(sidebar, 3)
+        content.addWidget(self.reaction, 3)
         root.addLayout(content, 1)
 
         toolbar = QFrame()
@@ -387,36 +330,10 @@ class PoseWindow(QWidget):
                 self.reaction.set_image(self.reference_images[state.active_ref])
             else:
                 self.reaction.show_message('Your reaction appears here\nwhen a pose matches.')
-            for index, row in enumerate(self.pose_rows, 1):
-                row.setProperty('matched', index == state.active_ref)
-                row.style().unpolish(row)
-                row.style().polish(row)
-            self.match_label.setProperty('matched', state.active_ref is not None)
-            self.match_label.style().unpolish(self.match_label)
-            self.match_label.style().polish(self.match_label)
-            self.match_animation.stop()
-            if state.active_ref is not None:
-                self.match_animation.setStartValue(0.65)
-                self.match_animation.setEndValue(1.0)
-                self.match_animation.start()
-            else:
-                self.match_effect.setOpacity(1.0)
-        if state.active_ref:
-            name = 'Smile + finger up' if state.active_ref == 1 else 'Thinking pose'
-            self.match_label.setText(f'Matched · {name}')
-        else:
-            self.match_label.setText('Try either pose')
 
     def clear_match(self):
-        self.match_animation.stop()
-        self.match_effect.setOpacity(1.0)
         self._active_ref = None
         self.reaction.show_message('Your reaction appears here\nwhen a pose matches.')
-        self.match_label.setText('Try either pose')
-        for widget in [self.match_label, *self.pose_rows]:
-            widget.setProperty('matched', False)
-            widget.style().unpolish(widget)
-            widget.style().polish(widget)
         self.fps_label.setText('— FPS')
 
     @Slot(str)
